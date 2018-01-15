@@ -1,9 +1,12 @@
 var url = "https://whispering-cove-48870.herokuapp.com/registration/application/";
 var login_url = "https://whispering-cove-48870.herokuapp.com/login/";
+var base_url = "https://whispering-cove-48870.herokuapp.com/";
+
+var user_data;
 
 $('#login_form').submit(function(evt) {
     evt.preventDefault();
-    $.post(login_url, {
+    $.post(base_url + "login", {
         "username": $('#login_form input[name=username]').val(),
         "password": $('#login_form input[name=password]').val()
     }).done(function(data) {
@@ -21,11 +24,12 @@ function show_form() {
             'Authorization': 'Token ' + localStorage.getItem("token")
         }
     });
-    $.get(url).done(function(data) {
+    $.get(base_url + "registration/application").done(function(data) {
         show_questions(data);
     }).fail(function(err) {
-        // localStorage.removeItem("token");
-        // location.reload();
+        alert("An error occurred. Please try again later.");
+        localStorage.removeItem("token");
+        location.reload();
     });
 }
 
@@ -41,29 +45,57 @@ function show_questions(data) {
         } else if (field.type == "long_answer") {
             element = $("<textarea>");
         }
-        element.attr('id', field.ordering);
-        element.data("field", field);
-        element.css('display', 'block');
-        form.append(label);
-        form.append(element);
+        element.attr('id', field.ordering)
+            .data('field', field)
+            .attr('prompt', field.prompt)
+            .css('display', 'block')
+            .prop('disabled', true)
+            .val('Loading...')
+            .addClass('question');
+        form.append(label).append(element);
     });
     var submit = $("<input type='submit'>");
-    form.submit(function(evt) {
-        evt.preventDefault();
-        var answers = {};
-        form.children().map(function() {
-            if (this.tagName == 'LABEL' || (this.tagName == 'INPUT' && this.type == 'submit')) {
-                return;
-            }
-            answers[$(this).data("field")["prompt"]] = $(this).val();
-        });
-        $.post(url, {
-            "questions": answers,
-            "complete": false
-        })
-        console.log(answers);
+    form.submit(submit_form).append(submit);
+
+    get_user_data();
+}
+
+function get_user_data() {
+    $.get(base_url + "registration/applicant").done(function(data) {
+        
+        console.log(data);
+        user_data = data;
+
+        $('.question').prop('disabled', false).val('');
+
+        var questions = JSON.parse(user_data.data);
+
+        for (var key in questions) {
+            console.log(key);
+            $('[prompt="' + key + '"]')
+                .prop('disabled', false)
+                .val(questions[key]);
+        };
+
+    }).fail(function(err) {
+        alert("An error occurred. Please try again later.");
+        localStorage.removeItem("token");
+        location.reload();
     });
-    form.append(submit);
+}
+
+function submit_form(evt) {
+    evt.preventDefault();
+    var answers = {};
+    $('#registration_form').children().map(function() {
+        if (this.tagName == 'LABEL' || (this.tagName == 'INPUT' && this.type == 'submit')) {
+            return;
+        }
+        if ($(this).val()) answers[$(this).attr('prompt')] = $(this).val();
+    });
+    user_data.data = JSON.stringify(answers);
+    console.log(user_data);
+    // $.post(base_url + "registration/applicant/", user_data);
 }
 
 if (localStorage.getItem("token")) {
