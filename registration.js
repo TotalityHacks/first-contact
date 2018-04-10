@@ -1,104 +1,138 @@
-var url = "https://whispering-cove-48870.herokuapp.com/registration/application/";
-var login_url = "https://whispering-cove-48870.herokuapp.com/login/";
-var base_url = "https://whispering-cove-48870.herokuapp.com/";
+var BASE_URL = 'https://madras-test.herokuapp.com';
+var LOGIN_URL = BASE_URL + '/login/';
+var SIGNUP_URL = BASE_URL + '/registration/signup/';
+var APPLICATION_URL = BASE_URL + '/application/';
 
-var user_data;
 
-$('#login_form').submit(function(evt) {
-    evt.preventDefault();
-    $.post(base_url + "login", {
-        "username": $('#login_form input[name=username]').val(),
-        "password": $('#login_form input[name=password]').val()
-    }).done(function(data) {
-        localStorage.setItem("token", data.token);
-        location.reload();
-    }).fail(function(err) {
-        document.write("Incorrect username and/or password.");
-    });
-});
+function login(e) {
+    if (e) e.preventDefault();
+    form = $('#login_form');
+    params = {
+        username: form.children('input[name=email]').val(),
+        password: form.children('input[name=password]').val(),
+    };
+    $.ajax({
+        type:"POST",
+        url: LOGIN_URL,
+        dataType: 'json',
+        data: JSON.stringify(params),
+        contentType: 'application/json'
+    })
+        .done(function(data) {
+            console.log(data);
+            localStorage.setItem('token', data.token);
+            window.location.hash = "#apply";
+        }).fail(function(data) {
+            errors = data.responseJSON;
+            $('#login_email_error').text(errors.username);
+            $('#login_password_error').text(errors.password);
+            $('#login_error').text(errors.non_field_errors);
+        });
+}
 
-function show_form() {
-    $('#registration_form').show();
-    $.ajaxSetup({
+function register(e) {
+    if (e) e.preventDefault();
+    form = $('#registration_form');
+    var username = form.children('input[name=email]').val();
+    var password1 = form.children('input[name=password1]').val();
+    var password2 = form.children('input[name=password2]').val();
+    if (password1 != password2) {
+        $('#register_password2_email').text('Your passwords must match.')
+        return;
+    }
+    params = {
+        email: username,
+        password: password1
+    };
+    $.ajax({
+        type:"POST",
+        url: SIGNUP_URL,
+        dataType: 'json',
+        data: JSON.stringify(params),
+        contentType: 'application/json'
+    })
+        .done(function(data) {
+            $('#registration_form input').hide();
+            $('#registration_form label').hide();
+            $('#register_error').text(data.message).show();
+            console.log(data);
+            // window.location.hash = "#apply";
+        }).fail(function(data) {
+            errors = data.responseJSON.errors;
+            if (!errors) return;
+            $('#register_email_error').text(errors.email);
+            $('#register_password1_error').text(errors.password);
+            $('#register_password2_error').text('');
+            $('#register_error').text(errors.non_field_errors);
+        });
+
+}
+
+function logout() {
+    localStorage.removeItem('token');
+    location.hash = '';
+}
+
+$('#logout').click(logout);
+
+$('#login_form').submit(login);
+$('#registration_form').submit(register);
+
+function login_form() {
+    $('#application, #registration_form').hide();
+    $('#login_registration, #login_form').show();
+    $('#login_view').addClass('selected');
+    $('#registration_view').removeClass('selected');
+}
+
+function registration_form() {
+    $('#application, #login_form').hide();
+    $('#login_registration, #registration_form').show();
+    $('#registration_view').addClass('selected');
+    $('#login_view').removeClass('selected');
+}
+
+function load_application() {
+    $('#login_registration').hide();
+    $('#application_form').show();
+
+    $.ajax({
+        method: "GET",
+        url: APPLICATION_URL,
         headers: {
-            'Authorization': 'Token ' + localStorage.getItem("token")
+            'Authorization': 'Token ' + localStorage.getItem('token')
         }
-    });
-    $.get(base_url + "registration/application").done(function(data) {
-        show_questions(data);
-    }).fail(function(err) {
-        alert("An error occurred. Please try again later.");
-        localStorage.removeItem("token");
-        location.reload();
-    });
-}
-
-function show_questions(data) {
-    var form = $('#registration_form');
-    data.fields.map(function(field) {
-        var label = $("<label>");
-        label.attr('for', field.ordering);
-        label.html(field.prompt);
-        var element;
-        if (field.type == "short_answer") {
-            element = $("<input>");
-        } else if (field.type == "long_answer") {
-            element = $("<textarea>");
-        }
-        element.attr('id', field.ordering)
-            .data('field', field)
-            .attr('prompt', field.prompt)
-            .css('display', 'block')
-            .prop('disabled', true)
-            .val('Loading...')
-            .addClass('question');
-        form.append(label).append(element);
-    });
-    var submit = $("<input type='submit'>");
-    form.submit(submit_form).append(submit);
-
-    get_user_data();
-}
-
-function get_user_data() {
-    $.get(base_url + "registration/applicant").done(function(data) {
-        
+    }).done(function(data) {
         console.log(data);
-        user_data = data;
-
-        $('.question').prop('disabled', false).val('');
-
-        var questions = JSON.parse(user_data.data);
-
-        for (var key in questions) {
-            console.log(key);
-            $('[prompt="' + key + '"]')
-                .prop('disabled', false)
-                .val(questions[key]);
-        };
-
-    }).fail(function(err) {
-        alert("An error occurred. Please try again later.");
-        localStorage.removeItem("token");
-        location.reload();
-    });
+    }).fail(function(data) {
+        console.log(data);
+    })
 }
 
-function submit_form(evt) {
-    evt.preventDefault();
-    var answers = {};
-    $('#registration_form').children().map(function() {
-        if (this.tagName == 'LABEL' || (this.tagName == 'INPUT' && this.type == 'submit')) {
+function figure_out_current_view() {
+    if (window.location.hash == "") {
+        window.location.hash = "#login";
+    } else if (window.location.hash == "#login") {
+        if (localStorage.getItem('token')) {
+            window.location.hash = '#apply';
             return;
         }
-        if ($(this).val()) answers[$(this).attr('prompt')] = $(this).val();
-    });
-    user_data.data = JSON.stringify(answers);
-    console.log(user_data);
-    // $.post(base_url + "registration/applicant/", user_data);
+        login_form();
+    } else if (window.location.hash == "#register") {
+        if (localStorage.getItem('token')) {
+            window.location.hash = '#apply';
+            return;
+        }
+        registration_form();
+    } else if (window.location.hash == "#forgot") {
+        alert("Password recovery has not been implemented.");
+    } else if (window.location.hash == "#apply") {
+        if (!localStorage.getItem('token')) {
+            window.location.hash = '#login'
+        }
+        load_application();
+    }
 }
 
-if (localStorage.getItem("token")) {
-    $('#login_form').hide();
-    show_form();
-}
+$(window).on('hashchange', figure_out_current_view);
+figure_out_current_view();

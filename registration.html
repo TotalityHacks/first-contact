@@ -1,15 +1,44 @@
 <html>
     <head>
         <title>Registration</title>
+        <link rel="stylesheet" type="text/css" href="registration.css"/>
     </head>
     <body>
-        <form id="login_form">
-            <input type="text" name="username" placeholder="Username"/>
-            <input type="password" name="password" placeholder="Password"/>
-            <input type="submit" name="login" value="Login"/>
-        </form>
-        <form id="registration_form" style="display:none">
-        </form>
+        <div id="form_container">
+            <div id="login_registration">
+                <img id="lr_logo" src="svg-white.svg" alt="Totality Logo"/>
+                <div id="login_selector" class="lr" >
+                    <a id="login_view" class="lr selector" href="#login">Login</a>
+                    |
+                    <a id="registration_view" class="lr selector" href="#register">Register</a>
+                </div>
+                <form id="login_form" class="lr" >
+                    <div id="login_error" class="form_error"></div>
+                    <label id="login_email_error" for="login_email" class="form_error"></label>
+                    <input type="text" name="email" id="login_email" class="lr" placeholder="Email"/>
+                    <label id="login_password_error" for="login_password" class="form_error"></label>
+                    <input type="password" name="password" id="login_password" class="lr" placeholder="Password"/>
+                    <input type="submit" name="login" class="lr" value="Login"/>
+                    <a id="forgot" class="lr" href="#forgot">Forgot password?</a>
+                </form>
+                <form id="registration_form" class="lr" >
+                    <div id="register_error" class="form_error"></div>
+                    <label id="register_email_error" for="register_email" class="form_error"></label>
+                    <input type="text" name="email" id="register_email" class="lr" placeholder="Email"/>
+                    <label id="register_password1_error" for="register_password1" class="form_error"></label>
+                    <input type="password" name="password1" id="register_password1" class="lr" placeholder="Password"/>
+                    <label id="register_password2_error" for="register_password2" class="form_error"></label>
+                    <input type="password" name="password2" id="register_password2" class="lr" placeholder="Confirm Password"/>
+                    <input type="submit" name="register" class="lr" value="Register"/>
+                </form>
+            </div>
+            <div id="application">
+                <a id="logout" href="#">Log Out</a>
+                <form id="application_form">
+                </form>
+            </div>
+        </div>
+
         <script
         src="https://code.jquery.com/jquery-3.2.1.min.js"
         integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
