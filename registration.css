@@ -22,8 +22,10 @@ form {
 }
 
 #lr_logo {
+    width: 90%;
     max-width: 500px;
     margin-bottom: 5vh;
+    height: 10vh;
 }
 
 #login_selector {
