@@ -77,6 +77,10 @@ input[type="submit"].lr {
     cursor: pointer;
 }
 
+input[disabled].lr {
+    opacity: 0.5;
+}
+
 #forgot {
     text-align: center;
     width: 100%;

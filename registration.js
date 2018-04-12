@@ -8,9 +8,9 @@ var questions;
 
 function login(e) {
     if (e) e.preventDefault();
-    form = $('#login_form');
+    var form = $('#login_form');
     form.children('input').prop('disabled', true);
-    params = {
+    var params = {
         username: form.children('input[name=email]').val(),
         password: form.children('input[name=password]').val(),
     };
@@ -22,11 +22,11 @@ function login(e) {
         contentType: 'application/json'
     })
         .done(function(data) {
-            console.log(data);
             localStorage.setItem('token', data.token);
             window.location.hash = "#apply";
+            form.children('input').prop('disabled', false);
         }).fail(function(data) {
-            errors = data.responseJSON;
+            var errors = data.responseJSON;
             $('#login_email_error').text(errors.username);
             $('#login_password_error').text(errors.password);
             $('#login_error').text(errors.non_field_errors);
@@ -36,7 +36,7 @@ function login(e) {
 
 function register(e) {
     if (e) e.preventDefault();
-    form = $('#registration_form');
+    var form = $('#registration_form');
     var username = form.children('input[name=email]').val();
     var password1 = form.children('input[name=password1]').val();
     var password2 = form.children('input[name=password2]').val();
@@ -44,10 +44,11 @@ function register(e) {
         $('#register_password2_email').text('Your passwords must match.')
         return;
     }
-    params = {
+    var params = {
         email: username,
         password: password1
     };
+    form.children('input').prop('disabled', true);
     $.ajax({
         type:"POST",
         url: SIGNUP_URL,
@@ -59,15 +60,15 @@ function register(e) {
             $('#registration_form input').hide();
             $('#registration_form label').hide();
             $('#register_error').text(data.message).show();
-            console.log(data);
-            // window.location.hash = "#apply";
+            form.children('input').prop('disabled', false);
         }).fail(function(data) {
-            errors = data.responseJSON.errors;
+            var errors = data.responseJSON.errors;
             if (!errors) return;
             $('#register_email_error').text(errors.email);
             $('#register_password1_error').text(errors.password);
             $('#register_password2_error').text('');
             $('#register_error').text(errors.non_field_errors);
+            form.children('input').prop('disabled', false);
         });
 
 }
@@ -98,12 +99,13 @@ function registration_form() {
 
 function load_application() {
     $('#login_registration').hide();
-    $('#application_form').show();
+    $('#application').show();
 
     load_questions(profile_view);
 }
 
 function figure_out_current_view() {
+    $(':input:not([type=button]):not([type=submit])').val('');
     if (window.location.hash == "") {
         window.location.hash = "#login";
     } else if (window.location.hash == "#login") {
@@ -191,6 +193,9 @@ function load_questions(cb) {
         var q = new Question(key, questions_json[key]['type'], questions_json[key]['required'], questions_json[key]['label'], questions_json[key]['max_length']);
         questions.push(q);
     }
+
+    $('#personal_info').empty();
+    $('#essays').empty();
 
     questions.map(function(q) {
         if (q.category == 'profile') {
