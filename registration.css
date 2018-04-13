@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css?family=Ubuntu:300,400,700');
 
+html {
+    margin: 0;
+    height: 100vh;
+}
+
 body {
     color: white;
     font-family: 'Ubuntu', sans-serif;
@@ -103,10 +108,39 @@ input[disabled].lr {
     width: 80vw;
     max-width: 1000px;
     margin-top: 20px;
+    margin-bottom: 20px;
     font-size: 38pt;
     font-weight: lighter;
     font-family: 'Ubuntu', sans-serif;
     font-variant: small-caps;
+    display: flex;
+    justify-content: flex-start;
+}
+
+#sun {
+    max-height: 1.5em;
+    margin: 0 0 0 20px;
+}
+
+#page_title {
+    margin: 0 20px;
+}
+
+#last_saved {
+    margin: 0 0 0 auto;
+    font-weight: 300;
+    font-size: 12pt;
+    font-variant: normal;
+    align-self: flex-end;
+}
+
+#logout {
+    margin: 0 20px 0 10px;
+    display: inline;
+    font-size: 12pt;
+    align-self: flex-end;
+    font-variant: normal;
+    color: white;
 }
 
 #application_form {

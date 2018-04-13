@@ -106,6 +106,7 @@ function load_application() {
 
 function figure_out_current_view() {
     $(':input:not([type=button]):not([type=submit])').val('');
+    $('.form_error').text('');
     if (window.location.hash == "") {
         window.location.hash = "#login";
     } else if (window.location.hash == "#login") {
