@@ -1,8 +1,10 @@
 "use strict";
-var BASE_URL = 'https://madras-test.herokuapp.com';
-var LOGIN_URL = BASE_URL + '/login/';
-var SIGNUP_URL = BASE_URL + '/registration/signup/';
-var APPLICATION_URL = BASE_URL + '/application/';
+var BASE_URL = 'https://madras-test.herokuapp.com/';
+var LOGIN_URL = BASE_URL + 'login/';
+var SIGNUP_URL = BASE_URL + 'registration/signup/';
+var APPLICATION_URL = BASE_URL + 'application/';
+var QUESTIONS_URL = APPLICATION_URL + 'questions/';
+var SUBMIT_URL = APPLICATION_URL + 'submit/'
 
 var questions;
 
@@ -129,12 +131,14 @@ function figure_out_current_view() {
         }
         load_application();
     }
+    $('#form_container').show();
 }
 
 $(window).on('hashchange', figure_out_current_view);
 figure_out_current_view();
 
 function Question(name, type, required, label, max_length) {
+    max_length = max_length || 100;
     this.question_name = name;
     this.question_type = type;
     this.question_required = required;
@@ -151,16 +155,14 @@ function Question(name, type, required, label, max_length) {
     wrapper.append(label);
 
     var input = $("<input>");
-    if (type == 'string') {
-        if (max_length <= 100) {
+    if (type == 'short') {
             input.prop('type', 'text');
             input.prop('maxlength', max_length || 524288);
             this.category = 'profile';
-        } else {
-            wrapper.addClass('essay');
-            input = $('<textarea>');
-            this.category = 'application';
-        }
+    } else if (type == 'long') {
+        wrapper.addClass('essay');
+        input = $('<textarea>');
+        this.category = 'application';
     }
     input.prop('placeholder', 'Your answer');
     input.prop('id', name);
@@ -168,45 +170,44 @@ function Question(name, type, required, label, max_length) {
     wrapper.append(input);
 
     this.container = wrapper;
+    this.input = input;
 }
 
 function load_questions(cb) {
-    var questions_json = {
-        "github_username": {
-            "type": "string",
-            "required": false,
-            "read_only": false,
-            "label": "Github username",
-            "max_length": 39
-        },
-        "what_matters": {
-            "type": "string",
-            "required": false,
-            "read_only": false,
-            "label": "What matters to you and why?",
-            "max_length": 500
+    $.ajax({
+        type:"GET",
+        url: QUESTIONS_URL,
+        dataType: "json",
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader("Authorization", "Token " + localStorage.getItem('token'));
         }
-    }
-
-    questions = [];
-
-    for (var key in questions_json) {
-        var q = new Question(key, questions_json[key]['type'], questions_json[key]['required'], questions_json[key]['label'], questions_json[key]['max_length']);
-        questions.push(q);
-    }
-
-    $('#personal_info').empty();
-    $('#essays').empty();
-
-    questions.map(function(q) {
-        if (q.category == 'profile') {
-            $('#personal_info').append(q.container);
-        } else if (q.category == 'application') {
-            $('#essays').append(q.container);
+    }).done(function(data) {
+        questions = [];
+        for (var i = 0; i < data.length; i++) {
+            var q = new Question('question_' + data[i].id, 'short', true, data[i].text);
+            questions.push(q);
         }
+
+        questions.push(new Question('github_username', 'short', true, 'GitHub Username', 39));
+
+        $('#personal_info').empty();
+        $('#essays').empty();
+
+        questions.map(function(q) {
+            if (q.category == 'profile') {
+                $('#personal_info').append(q.container);
+            } else if (q.category == 'application') {
+                $('#essays').append(q.container);
+            }
+        });
+    
+        cb();
+
+    }).fail(function(data) {
+        $('#personal_info').empty();
+        $('#essays').empty();
+        $('#personal_info').text(data.responseText);
     });
-
-    cb();
 }
 
 function profile_view(e) {
@@ -229,3 +230,25 @@ function apply_view(e) {
 
 $('#next_page').click(apply_view);
 $('#previous_page').click(profile_view);
+
+function save() {
+    var data = {};
+    for (var i = 0; i < questions.length; i++) {
+        var q = questions[i];
+        data[q.question_name] = q.input.val();
+    }
+    console.log(data);
+    $.ajax({
+        type:"POST",
+        url: SUBMIT_URL,
+        dataType: "json",
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader("Authorization", "Token " + localStorage.getItem('token'));
+        },
+        data: data
+    }).done(function(data) {
+        console.log(data);
+    }).fail(function(data) {
+        console.error(data);
+    });
+}

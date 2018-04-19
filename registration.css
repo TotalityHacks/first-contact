@@ -12,6 +12,10 @@ body {
     background: linear-gradient(#F05A2A,#E60C88)
 }
 
+#form_container {
+    display: none;
+}
+
 #login_registration {
     display: flex;
     flex-direction: column;
@@ -155,16 +159,17 @@ input[disabled].lr {
     flex-direction: row;
     justify-content: space-around;
     flex-wrap: wrap;
+    color: black;
+    margin-bottom: 10px;
 }
 
 .wrapper {
-    width: 50%;
+    width: 40%;
     min-width: 200px;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    box-sizing: border-box;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .wrapper.essay {
@@ -172,7 +177,7 @@ input[disabled].lr {
 }
 
 input.app, textarea.app {
-    width: 100%;
+    width: 95%;
     font-family: 'Ubuntu', sans-serif;
     font-size: 14pt;
     padding: 5px 10px;
