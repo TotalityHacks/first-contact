@@ -8,6 +8,9 @@ var SUBMIT_URL = APPLICATION_URL + 'submit/'
 
 var questions;
 
+var SHORT_ANSWER_TYPE = 'text';
+var ESSAY_TYPE = 'essay';
+
 function login(e) {
     if (e) e.preventDefault();
     var form = $('#login_form');
@@ -155,11 +158,11 @@ function Question(name, type, required, label, max_length) {
     wrapper.append(label);
 
     var input = $("<input>");
-    if (type == 'short') {
+    if (type == SHORT_ANSWER_TYPE) {
             input.prop('type', 'text');
             input.prop('maxlength', max_length || 524288);
             this.category = 'profile';
-    } else if (type == 'long') {
+    } else if (type == ESSAY_TYPE) {
         wrapper.addClass('essay');
         input = $('<textarea>');
         this.category = 'application';
@@ -184,11 +187,11 @@ function load_questions(cb) {
     }).done(function(data) {
         questions = [];
         for (var i = 0; i < data.length; i++) {
-            var q = new Question('question_' + data[i].id, 'short', true, data[i].text);
+            var q = new Question('question_' + data[i].id, data[i].type, true, data[i].text);
             questions.push(q);
         }
 
-        questions.push(new Question('github_username', 'short', true, 'GitHub Username', 39));
+        questions.push(new Question('github_username', SHORT_ANSWER_TYPE, true, 'GitHub Username', 39));
 
         $('#personal_info').empty();
         $('#essays').empty();

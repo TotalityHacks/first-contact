@@ -2,7 +2,6 @@
 
 html {
     margin: 0;
-    height: 100vh;
 }
 
 body {
@@ -100,8 +99,9 @@ input[disabled].lr {
 }
 
 #application {
-    width: 100vw;
-    height: 100vh;
+    margin: 0 auto;
+    width: 90vw;
+    min-height: 100vh;
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
@@ -152,6 +152,7 @@ input[disabled].lr {
     width: 80vw;
     max-width: 1000px;
     padding: 10px;
+    margin-bottom: 20px;
 }
 
 .page {
@@ -181,6 +182,10 @@ input.app, textarea.app {
     font-family: 'Ubuntu', sans-serif;
     font-size: 14pt;
     padding: 5px 10px;
+}
+
+textarea.app {
+    min-height: 200px;
 }
 
 label.app {
