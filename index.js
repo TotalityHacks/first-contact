@@ -11,6 +11,8 @@ var questions;
 var SHORT_ANSWER_TYPE = 'text';
 var ESSAY_TYPE = 'essay';
 
+$('#no_js').hide();
+
 function login(e) {
     if (e) e.preventDefault();
     var form = $('#login_form');
