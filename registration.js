@@ -137,8 +137,7 @@ function figure_out_current_view() {
     $('#form_container').show();
 }
 
-$(window).on('hashchange', figure_out_current_view);
-figure_out_current_view();
+var answers;
 
 function Question(name, type, required, label, max_length) {
     max_length = max_length || 100;
@@ -151,11 +150,11 @@ function Question(name, type, required, label, max_length) {
     var wrapper = $("<div>");
     wrapper.addClass("wrapper app question_" + type);
     
-    var label = $("<label>");
-    label.addClass("question_label app");
-    label.prop('for', name);
-    label.text(this.question_label);
-    wrapper.append(label);
+    var label_element = $("<label>");
+    label_element.addClass("question_label app");
+    label_element.prop('for', name);
+    label_element.text(label);
+    wrapper.append(label_element);
 
     var input = $("<input>");
     if (type == SHORT_ANSWER_TYPE) {
@@ -174,38 +173,78 @@ function Question(name, type, required, label, max_length) {
 
     this.container = wrapper;
     this.input = input;
+
+    if (answers) {
+        for (var i = 0; i < answers.length; i++) {
+            if (answers[i][0] == label) {
+                input.val(answers[i][1]);
+            }
+        }
+    }
+
+    function handler() {
+        needs_save();
+        label_element.addClass('unsaved');
+    }
+
+    input.keyup(handler).change(handler);
 }
 
 function load_questions(cb) {
+    load_answers(function() {
+        $.ajax({
+            type:"GET",
+            url: QUESTIONS_URL,
+            dataType: "json",
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("Authorization", "Token " + localStorage.getItem('token'));
+            }
+        }).done(function(data) {
+            questions = [];
+            for (var i = 0; i < data.length; i++) {
+                var q = new Question('question_' + data[i].id, data[i].type, true, data[i].text);
+                questions.push(q);
+            }
+
+            questions.push(new Question('github_username', SHORT_ANSWER_TYPE, true, 'GitHub Username', 39));
+
+            $('#personal_info').empty();
+            $('#essays').empty();
+
+            questions.map(function(q) {
+                if (q.category == 'profile') {
+                    $('#personal_info').append(q.container);
+                } else if (q.category == 'application') {
+                    $('#essays').append(q.container);
+                }
+            });
+        
+            cb();
+
+        }).fail(function(data) {
+            $('#personal_info').empty();
+            $('#essays').empty();
+            $('#personal_info').text(data.responseText);
+        });
+    });
+}
+
+function load_answers(cb) {
     $.ajax({
         type:"GET",
-        url: QUESTIONS_URL,
+        url: SUBMIT_URL,
         dataType: "json",
         beforeSend: function(xhr) {
             xhr.setRequestHeader("Authorization", "Token " + localStorage.getItem('token'));
         }
     }).done(function(data) {
-        questions = [];
-        for (var i = 0; i < data.length; i++) {
-            var q = new Question('question_' + data[i].id, data[i].type, true, data[i].text);
-            questions.push(q);
+        if (data.error) {
+            answers = [];
+        } else {
+            answers = data.questions;
         }
-
-        questions.push(new Question('github_username', SHORT_ANSWER_TYPE, true, 'GitHub Username', 39));
-
-        $('#personal_info').empty();
-        $('#essays').empty();
-
-        questions.map(function(q) {
-            if (q.category == 'profile') {
-                $('#personal_info').append(q.container);
-            } else if (q.category == 'application') {
-                $('#essays').append(q.container);
-            }
-        });
-    
+        answers.push(["GitHub Username", data.github_username]);
         cb();
-
     }).fail(function(data) {
         $('#personal_info').empty();
         $('#essays').empty();
@@ -234,13 +273,12 @@ function apply_view(e) {
 $('#next_page').click(apply_view);
 $('#previous_page').click(profile_view);
 
-function save() {
+function save(cb) {
     var data = {};
     for (var i = 0; i < questions.length; i++) {
         var q = questions[i];
         data[q.question_name] = q.input.val();
     }
-    console.log(data);
     $.ajax({
         type:"POST",
         url: SUBMIT_URL,
@@ -250,8 +288,44 @@ function save() {
         },
         data: data
     }).done(function(data) {
-        console.log(data);
+        if (typeof cb == 'function') cb();
     }).fail(function(data) {
+        $('#last_saved').text('Could not save your work.');
         console.error(data);
     });
 }
+
+var last_save;
+var needs_save_time;
+
+function save_finished() {
+    last_save = Date.now();
+    needs_save_time = false;
+    $('.unsaved').removeClass('unsaved');
+}
+
+function needs_save() {
+    needs_save_time = Date.now();
+    $('#last_saved').text('Unsaved.')
+}
+
+function save_count_update() {
+    if (needs_save_time && (Date.now() - needs_save_time > 1000)) {
+        save(save_finished);
+        return;
+    }
+    if (!last_save || needs_save_time) return;
+    var seconds = Math.round((Date.now() - last_save)/1000);
+    seconds = seconds || 1;
+    if (seconds < 60) {
+        $('#last_saved').text('Last saved ' + seconds + ' second' + (seconds == 1 ? '' : 's') + ' ago.')
+    } else {
+        var minutes = Math.round(seconds/60);
+        $('#last_saved').text('Last saved ' + minutes + ' minute' + (minutes == 1 ? '' : 's') + ' ago.')
+    }
+}
+
+setInterval(save_count_update, 250);
+
+$(window).on('hashchange', figure_out_current_view);
+figure_out_current_view();
