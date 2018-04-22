@@ -238,7 +238,7 @@ label.app {
 
 .app label.unsaved::after {
     content: "Unsaved";
-    color: grey;
+    color: #4a4a4a;
     margin-left: 10px;
     font-size: 10pt;
 }
