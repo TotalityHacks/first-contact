@@ -193,6 +193,8 @@ function Question(name, type, required, label, max_length) {
 }
 
 function load_questions(cb) {
+    $('#application_form').hide();
+    $('#page_title').text('loading...');
     load_answers(function() {
         $.ajax({
             type:"GET",
@@ -220,7 +222,6 @@ function load_questions(cb) {
                     $('#essays').append(q.container);
                 }
             });
-        
             cb();
 
         }).fail(function(data) {
@@ -256,6 +257,7 @@ function load_answers(cb) {
 
 function profile_view(e) {
     if (e) e.preventDefault();
+    $('#application_form').show();
     $('#personal_info').show();
     $('#essays').hide();
     $('#page_title').text('profile');
@@ -265,6 +267,7 @@ function profile_view(e) {
 
 function apply_view(e) {
     if (e) e.preventDefault();
+    $('#application_form').show();
     $('#personal_info').hide();
     $('#essays').show();
     $('#page_title').text('apply');
@@ -322,8 +325,9 @@ function save_count_update() {
     if (seconds < 60) {
         $('#last_saved').text('Last saved ' + seconds + ' second' + (seconds == 1 ? '' : 's') + ' ago.')
     } else {
-        var minutes = Math.round(seconds/60);
-        $('#last_saved').text('Last saved ' + minutes + ' minute' + (minutes == 1 ? '' : 's') + ' ago.')
+        // var minutes = Math.round(seconds/60);
+        // $('#last_saved').text('Last saved ' + minutes + ' minute' + (minutes == 1 ? '' : 's') + ' ago.')
+        $('#last_saved').text('Saved.');
     }
 }
 
@@ -331,3 +335,7 @@ setInterval(save_count_update, 250);
 
 $(window).on('hashchange', figure_out_current_view);
 figure_out_current_view();
+
+$(window).on('beforeunload', function(e) {
+    if (needs_save_time) return 'Are you sure you want to quit?';
+});

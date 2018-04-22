@@ -13,6 +13,10 @@ body {
     min-height: 100vh;
 }
 
+body > div {
+    display: none;
+}
+
 #no_js {
     position: relative;
     margin: 0 auto;
