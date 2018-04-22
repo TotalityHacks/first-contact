@@ -222,6 +222,7 @@ function load_questions(cb) {
                     $('#essays').append(q.container);
                 }
             });
+            $('#last_saved').text('Saved.');
             cb();
 
         }).fail(function(data) {
