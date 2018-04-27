@@ -16,10 +16,33 @@ $('#no_js').hide();
 function login(e) {
     if (e) e.preventDefault();
     var form = $('#login_form');
+
+    $('#login_email_error').text('');
+    $('#login_password_error').text('');
+
+    var username = form.children('input[name=email]').val();
+    var password = form.children('input[name=password]').val();
+
+    var error = false;
+    if (username === '') {
+        $('#login_email_error').text('You must enter your email address.');
+        error = true;
+    }
+    if (username.indexOf('@') === -1) {
+        $('#login_email_error').text('This is not a valid email address.');
+        error = true;
+    }
+    if (password === '') {
+        $('#login_password_error').text('You must enter your password.');
+        error = true;
+    }
+
+    if (error) return;
+
     form.children('input').prop('disabled', true);
     var params = {
-        username: form.children('input[name=email]').val(),
-        password: form.children('input[name=password]').val(),
+        username: username,
+        password: password,
     };
     $.ajax({
         type:"POST",
