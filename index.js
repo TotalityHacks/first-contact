@@ -73,18 +73,20 @@ function register(e) {
     $('#register_email_error').text('');
     $('#register_password1_error').text('');
     $('#register_password2_error').text('');
+    var error = false;
     if (username === '' || username.indexOf('@') == -1) {
         $('#register_email_error').text('You must enter a valid email address.')
-        return;
+        error = true;
     }
     if (password1 === '') {
         $('#register_password1_error').text('You must enter a password.')
-        return;
+        error = true;
     }
     if (password1 !== password2) {
         $('#register_password2_error').text('Your passwords must match.')
-        return;
+        error = true;
     }
+    if (error) return;
     var params = {
         email: username,
         password: password1
