@@ -73,6 +73,7 @@ function register(e) {
     $('#register_email_error').text('');
     $('#register_password1_error').text('');
     $('#register_password2_error').text('');
+
     var error = false;
     if (username === '' || username.indexOf('@') == -1) {
         $('#register_email_error').text('You must enter a valid email address.')
@@ -87,6 +88,7 @@ function register(e) {
         error = true;
     }
     if (error) return;
+
     var params = {
         email: username,
         password: password1
@@ -192,6 +194,10 @@ function Question(name, type, required, label, max_length) {
     label_element.addClass("question_label app");
     label_element.prop('for', name);
     label_element.text(label);
+
+    var error_element = $("<span>").addClass("app_error").text('This field is required').hide();
+    label_element.append(error_element);
+    
     wrapper.append(label_element);
 
     var input = $("<input>");
@@ -219,8 +225,14 @@ function Question(name, type, required, label, max_length) {
             }
         }
     }
+    if (required && input.val() === '') wrapper.addClass('required');
 
     function handler() {
+        if (required && input.val() === '') {
+            wrapper.addClass('required');
+        } else {
+            wrapper.removeClass('required');
+        }
         needs_save();
         label_element.addClass('unsaved');
     }
