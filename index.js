@@ -47,8 +47,19 @@ function register(e) {
     var username = form.children('input[name=email]').val();
     var password1 = form.children('input[name=password1]').val();
     var password2 = form.children('input[name=password2]').val();
-    if (password1 != password2) {
-        $('#register_password2_email').text('Your passwords must match.')
+    $('#register_email_error').text('');
+    $('#register_password1_error').text('');
+    $('#register_password2_error').text('');
+    if (username === '' || username.indexOf('@') == -1) {
+        $('#register_email_error').text('You must enter a valid email address.')
+        return;
+    }
+    if (password1 === '') {
+        $('#register_password1_error').text('You must enter a password.')
+        return;
+    }
+    if (password1 !== password2) {
+        $('#register_password2_error').text('Your passwords must match.')
         return;
     }
     var params = {
