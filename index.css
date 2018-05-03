@@ -168,6 +168,11 @@ input[disabled].lr {
     margin-bottom: 20px;
 }
 
+#copyrightNotice {
+    text-align: center;
+    padding-bottom: 5px;
+}
+
 .page {
     display:flex;
     flex-direction: row;
