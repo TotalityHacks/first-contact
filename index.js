@@ -22,7 +22,7 @@ function login(e) {
         password: form.children('input[name=password]').val(),
     };
     $.ajax({
-        type:"POST",
+        type: "POST",
         url: LOGIN_URL,
         dataType: 'json',
         data: JSON.stringify(params),
@@ -186,7 +186,6 @@ function Question(name, type, required, label, max_length) {
 
     function handler() {
         needs_save();
-        label_element.addClass('unsaved');
     }
 
     input.keyup(handler).change(handler);
@@ -306,29 +305,19 @@ var needs_save_time;
 
 function save_finished() {
     last_save = Date.now();
-    needs_save_time = false;
-    $('.unsaved').removeClass('unsaved');
+    needs_save_time = null;
+    $('#last_saved').text('Saved.');
 }
 
 function needs_save() {
+    $('#last_saved').text('Saving...');
     needs_save_time = Date.now();
-    $('#last_saved').text('Unsaved.')
 }
 
 function save_count_update() {
     if (needs_save_time && (Date.now() - needs_save_time > 1000)) {
         save(save_finished);
         return;
-    }
-    if (!last_save || needs_save_time) return;
-    var seconds = Math.round((Date.now() - last_save)/1000);
-    seconds = seconds || 1;
-    if (seconds < 60) {
-        $('#last_saved').text('Last saved ' + seconds + ' second' + (seconds == 1 ? '' : 's') + ' ago.')
-    } else {
-        // var minutes = Math.round(seconds/60);
-        // $('#last_saved').text('Last saved ' + minutes + ' minute' + (minutes == 1 ? '' : 's') + ' ago.')
-        $('#last_saved').text('Saved.');
     }
 }
 
