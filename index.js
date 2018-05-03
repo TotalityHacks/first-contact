@@ -30,7 +30,7 @@ function login(e) {
     })
         .done(function(data) {
             localStorage.setItem('token', data.token);
-            window.location.hash = "#apply";
+            window.location.hash = "#application";
             form.children('input').prop('disabled', false);
         }).fail(function(data) {
             var errors = data.responseJSON;
@@ -114,27 +114,28 @@ function load_application() {
 function figure_out_current_view() {
     $(':input:not([type=button]):not([type=submit])').val('');
     $('.form_error').text('');
-    if (window.location.hash == "") {
-        window.location.hash = "#login";
-    } else if (window.location.hash == "#login") {
+    if (window.location.hash == "#register") {
         if (localStorage.getItem('token')) {
-            window.location.hash = '#apply';
-            return;
-        }
-        login_form();
-    } else if (window.location.hash == "#register") {
-        if (localStorage.getItem('token')) {
-            window.location.hash = '#apply';
+            window.location.hash = '#application';
             return;
         }
         registration_form();
-    } else if (window.location.hash == "#forgot") {
+    }
+    else if (window.location.hash == "#forgot") {
         alert("Password recovery has not been implemented.");
-    } else if (window.location.hash == "#apply") {
+    }
+    else if (window.location.hash == "#application") {
         if (!localStorage.getItem('token')) {
             window.location.hash = '#login'
         }
         load_application();
+    }
+    else {
+        if (localStorage.getItem('token')) {
+            window.location.hash = '#application';
+            return;
+        }
+        login_form();
     }
     $('#form_container').show();
 }
@@ -265,17 +266,17 @@ function profile_view(e) {
     $('#previous_page').hide();
 }
 
-function apply_view(e) {
+function application_view(e) {
     if (e) e.preventDefault();
     $('#application_form').show();
     $('#personal_info').hide();
     $('#essays').show();
-    $('#page_title').text('apply');
+    $('#page_title').text('application');
     $('#next_page').hide();
     $('#previous_page').show();
 }
 
-$('#next_page').click(apply_view);
+$('#next_page').click(application_view);
 $('#previous_page').click(profile_view);
 
 function save(cb) {
