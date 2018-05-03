@@ -38,7 +38,7 @@ body > div {
 #login_registration form {
     display: flex;
     flex-direction: column;
-    max-width: 300px;
+    width: 325px;
 }
 
 #lr_logo {
