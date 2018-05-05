@@ -16,10 +16,33 @@ $('#no_js').hide();
 function login(e) {
     if (e) e.preventDefault();
     var form = $('#login_form');
+
+    $('#login_email_error').text('');
+    $('#login_password_error').text('');
+
+    var username = form.children('input[name=email]').val();
+    var password = form.children('input[name=password]').val();
+
+    var error = false;
+    if (username === '') {
+        $('#login_email_error').text('You must enter your email address.');
+        error = true;
+    }
+    if (username.indexOf('@') === -1) {
+        $('#login_email_error').text('This is not a valid email address.');
+        error = true;
+    }
+    if (password === '') {
+        $('#login_password_error').text('You must enter your password.');
+        error = true;
+    }
+
+    if (error) return;
+
     form.children('input').prop('disabled', true);
     var params = {
-        username: form.children('input[name=email]').val(),
-        password: form.children('input[name=password]').val(),
+        username: username,
+        password: password,
     };
     $.ajax({
         type: "POST",
@@ -47,10 +70,25 @@ function register(e) {
     var username = form.children('input[name=email]').val();
     var password1 = form.children('input[name=password1]').val();
     var password2 = form.children('input[name=password2]').val();
-    if (password1 != password2) {
-        $('#register_password2_email').text('Your passwords must match.')
-        return;
+    $('#register_email_error').text('');
+    $('#register_password1_error').text('');
+    $('#register_password2_error').text('');
+
+    var error = false;
+    if (username === '' || username.indexOf('@') == -1) {
+        $('#register_email_error').text('You must enter a valid email address.')
+        error = true;
     }
+    if (password1 === '') {
+        $('#register_password1_error').text('You must enter a password.')
+        error = true;
+    }
+    if (password1 !== password2) {
+        $('#register_password2_error').text('Your passwords must match.')
+        error = true;
+    }
+    if (error) return;
+
     var params = {
         email: username,
         password: password1
@@ -157,6 +195,10 @@ function Question(name, type, required, label, max_length) {
     label_element.addClass("question_label app");
     label_element.prop('for', name);
     label_element.text(label);
+
+    var error_element = $("<span>").addClass("app_error").text('This field is required').hide();
+    label_element.append(error_element);
+    
     wrapper.append(label_element);
 
     var input = $("<input>");
@@ -184,8 +226,14 @@ function Question(name, type, required, label, max_length) {
             }
         }
     }
+    if (required && input.val() === '') wrapper.addClass('required');
 
     function handler() {
+        if (required && input.val() === '') {
+            wrapper.addClass('required');
+        } else {
+            wrapper.removeClass('required');
+        }
         needs_save();
     }
 

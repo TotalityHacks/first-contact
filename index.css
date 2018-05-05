@@ -234,16 +234,14 @@ label.app {
 }
 
 .app label::after {
-    content: "Saved";
-    color: white;
-    margin-left: 10px;
-    font-size: 10pt;
     transition: 1s;
+    content: "(Required)";
+    color: red;
+    font-size: 12pt;
+    margin-left: 10px;
+    opacity: 0;
 }
 
-.app label.unsaved::after {
-    content: "Unsaved";
-    color: #4a4a4a;
-    margin-left: 10px;
-    font-size: 10pt;
+.app.required label::after {
+    opacity: 1;
 }
