@@ -32,7 +32,7 @@ body > div {
     flex-direction: column;
     align-items: center;
     width: 100vw;
-    min-height: 100vh;
+    min-height: 95vh;
 }
 
 #login_registration form {
@@ -114,7 +114,7 @@ input[disabled].lr {
 #application {
     margin: 0 auto;
     width: 90vw;
-    min-height: 100vh;
+    min-height: 95vh;
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
