@@ -241,7 +241,7 @@ function Question(name, type, required, label, max_length) {
 
 function load_questions(cb) {
     $('#application_form').hide();
-    $('#page_title').text('loading...');
+    $('#page_title').text('');
     load_answers(function() {
         $.ajax({
             type:"GET",
