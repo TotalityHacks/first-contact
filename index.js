@@ -1,5 +1,4 @@
 "use strict";
-var BASE_URL = 'https://madras-test.herokuapp.com/';
 var LOGIN_URL = BASE_URL + 'login/';
 var SIGNUP_URL = BASE_URL + 'registration/signup/';
 var APPLICATION_URL = BASE_URL + 'application/';
@@ -309,7 +308,7 @@ function profile_view(e) {
     $('#application_form').show();
     $('#personal_info').show();
     $('#essays').hide();
-    $('#page_title').text('profile (page 1/2)');
+    $('#page_title').text('profile (page 1 of 2)');
     $('#next_page').show();
     $('#previous_page').hide();
 }
@@ -319,7 +318,7 @@ function application_view(e) {
     $('#application_form').show();
     $('#personal_info').hide();
     $('#essays').show();
-    $('#page_title').text('application (page 2/2)');
+    $('#page_title').text('application (page 2 of 2)');
     $('#next_page').hide();
     $('#previous_page').show();
 }
