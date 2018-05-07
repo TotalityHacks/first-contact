@@ -309,7 +309,7 @@ function profile_view(e) {
     $('#application_form').show();
     $('#personal_info').show();
     $('#essays').hide();
-    $('#page_title').text('profile');
+    $('#page_title').text('profile (page 1/2)');
     $('#next_page').show();
     $('#previous_page').hide();
 }
@@ -319,7 +319,7 @@ function application_view(e) {
     $('#application_form').show();
     $('#personal_info').hide();
     $('#essays').show();
-    $('#page_title').text('application');
+    $('#page_title').text('application (page 2/2)');
     $('#next_page').hide();
     $('#previous_page').show();
 }
