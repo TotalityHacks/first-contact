@@ -311,6 +311,7 @@ function profile_view(e) {
     $('#page_title').text('profile (page 1 of 2)');
     $('#next_page').show();
     $('#previous_page').hide();
+    $('#submit_button').hide();
 }
 
 function application_view(e) {
@@ -321,10 +322,23 @@ function application_view(e) {
     $('#page_title').text('application (page 2 of 2)');
     $('#next_page').hide();
     $('#previous_page').show();
+    $('#submit_button').show();
+}
+
+function submit_button(e) {
+    console.log("A");
+    if (e) e.preventDefault();
+    save(function() {
+        $('#submit_button').val('Submitted!');
+        setTimeout(function() {
+            $('#submit_button').val('Resubmit');
+        }, 2000);
+    })
 }
 
 $('#next_page').click(application_view);
 $('#previous_page').click(profile_view);
+$('#submit_button').click(submit_button);
 
 function save(cb) {
     var data = {};
