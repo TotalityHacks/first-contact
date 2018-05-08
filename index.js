@@ -6,6 +6,7 @@ var QUESTIONS_URL = APPLICATION_URL + 'questions/';
 var SUBMIT_URL = APPLICATION_URL + 'submit/'
 
 var questions;
+var status;
 
 var SHORT_ANSWER_TYPE = 'text';
 var ESSAY_TYPE = 'essay';
@@ -69,11 +70,24 @@ function register(e) {
     var username = form.children('input[name=email]').val();
     var password1 = form.children('input[name=password1]').val();
     var password2 = form.children('input[name=password2]').val();
+    var conduct = form.find('input[name=conduct]')[0].checked;
+    var data = form.find('input[name=data]')[0].checked;
+
     $('#register_email_error').text('');
     $('#register_password1_error').text('');
     $('#register_password2_error').text('');
+    $('#register_conduct_error').text('');
+    $('#register_data_error').text('');
 
     var error = false;
+    if (!conduct) {
+        $('#register_conduct_error').text('You must accept the MLH Code of Conduct.')
+        error = true;
+    }
+    if (!data) {
+        $('#register_data_error').text('You must agree to the MLH data sharing policy.')
+        error = true;
+    }
     if (username === '' || username.indexOf('@') == -1) {
         $('#register_email_error').text('You must enter a valid email address.')
         error = true;
@@ -323,8 +337,10 @@ function load_answers(cb) {
         }
     }).done(function(data) {
         if (data.error) {
+            status = 'Saved';
             answers = [];
         } else {
+            status = data.status;
             answers = data.questions;
         }
         answers.push(["GitHub Username", data.github_username]);
@@ -334,6 +350,7 @@ function load_answers(cb) {
             localStorage.removeItem('token');
             window.location.hash = '#login';
         } else if (data.status == 404) {
+            status = 'Saved';
             cb();
         } else {
             $('#application_form').show();
@@ -368,7 +385,7 @@ function application_view(e) {
 }
 
 function submit_button(e) {
-    console.log("A");
+    status = 'Submitted';
     if (e) e.preventDefault();
     save(function() {
         $('#submit_button').val('Submitted!');
@@ -384,6 +401,7 @@ $('#submit_button').click(submit_button);
 
 function save(cb) {
     var data = {};
+    data['status'] = status;
     for (var i = 0; i < questions.length; i++) {
         var q = questions[i];
         data[q.question_name] = q.input.val().slice(q.question_prefix.length);
