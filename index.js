@@ -179,13 +179,14 @@ function figure_out_current_view() {
 
 var answers;
 
-function Question(name, type, required, label, max_length) {
+function Question(name, type, required, label, max_length, prefix) {
     max_length = max_length || 100;
     this.question_name = name;
     this.question_type = type;
     this.question_required = required;
     this.question_label = label;
     this.question_max_length = max_length;
+    this.question_prefix = prefix;
 
     var wrapper = $("<div>");
     wrapper.addClass("wrapper app question_" + type);
@@ -194,12 +195,11 @@ function Question(name, type, required, label, max_length) {
     label_element.addClass("question_label app");
     label_element.prop('for', name);
     label_element.text(label);
-
-    var error_element = $("<span>").addClass("app_error").text('This field is required').hide();
-    label_element.append(error_element);
-    
     wrapper.append(label_element);
 
+    var charcount_element = $("<span>").addClass("charcount").text('').hide();
+    wrapper.append(charcount_element);
+    
     var input = $("<input>");
     if (type == SHORT_ANSWER_TYPE) {
             input.prop('type', 'text');
@@ -221,22 +221,52 @@ function Question(name, type, required, label, max_length) {
     if (answers) {
         for (var i = 0; i < answers.length; i++) {
             if (answers[i][0] == label) {
-                input.val(answers[i][1]);
+                input.val(prefix + answers[i][1]);
             }
         }
     }
     if (required && input.val() === '') wrapper.addClass('required');
 
     function handler() {
-        if (required && input.val() === '') {
+        var element = input[0];
+        if (prefix) {
+            if (!input.val().indexOf(prefix) == 0 && input.val().indexOf(prefix.slice(0, prefix.length-1)) == 0) {
+                var start = element.selectionStart;
+                input.val(prefix + input.val().slice(prefix.length - 1));
+                element.selectionStart = start + 1;
+                element.selectionEnd = start + 1;
+            }
+        }
+        if (prefix && input.val() === '') {
+            input.val(prefix);
+        }
+        if (element.selectionStart < prefix.length) {
+            element.selectionStart = prefix.length;
+        }
+        if (required && (input.val().length - prefix.length) <= 0) {
             wrapper.addClass('required');
         } else {
             wrapper.removeClass('required');
         }
-        needs_save();
+        if (max_length < 65535) {
+            charcount_element.show().text((input.val().length - prefix.length) + '/' + max_length + ' characters');
+        }
+        if (input.val().indexOf(prefix) != 0) {
+            console.error('The prefix was somehow deleted... will try to fix on next reload.');
+            prefix = '';
+            this.question_prefix = '';
+        }
     }
 
-    input.keyup(handler).change(handler);
+    function prevent_prefix_edit(e) {
+        if (input[0].selectionStart < prefix.length) e.preventDefault();
+        if (input[0].selectionStart === prefix.length && input[0].selectionEnd === prefix.length && e.which == 8) e.preventDefault();
+    }
+
+    input.keyup(handler).change(handler).click(handler);
+    input.keyup(needs_save).change(needs_save);
+    input.keydown(prevent_prefix_edit).on('cut copy paste', prevent_prefix_edit);
+    handler();
 }
 
 function load_questions(cb) {
@@ -253,11 +283,11 @@ function load_questions(cb) {
         }).done(function(data) {
             questions = [];
             for (var i = 0; i < data.length; i++) {
-                var q = new Question('question_' + data[i].id, data[i].type, true, data[i].text);
+                var q = new Question('question_' + data[i].id, data[i].type, true, data[i].text, data[i].max_length, data[i].prefix);
                 questions.push(q);
             }
 
-            questions.push(new Question('github_username', SHORT_ANSWER_TYPE, true, 'GitHub Username', 39));
+            questions.push(new Question('github_username', SHORT_ANSWER_TYPE, true, 'GitHub Username', 39, 'https://github.com/'));
 
             $('#personal_info').empty();
             $('#essays').empty();
@@ -344,7 +374,7 @@ function save(cb) {
     var data = {};
     for (var i = 0; i < questions.length; i++) {
         var q = questions[i];
-        data[q.question_name] = q.input.val();
+        data[q.question_name] = q.input.val().slice(q.question_prefix.length);
     }
     $.ajax({
         type:"POST",

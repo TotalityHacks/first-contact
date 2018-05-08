@@ -215,13 +215,20 @@ label.app {
     font-size: 14pt;
 }
 
+.charcount {
+    display: block;
+    font-size: 12pt;
+    margin-bottom: 10px;
+    color: #E60C88;
+}
+
 #buttons {
     display: flex;
     justify-content: space-around;
 }
 
 #buttons input {
-    width: 150px;
+    width: 200px;
     height: 50px;
     background-color: white;
     border: 2px solid #E60C88;
@@ -231,6 +238,12 @@ label.app {
     font-weight: bold;
     color: #E60C88;
     cursor: pointer;
+}
+
+input#submit_button {
+    background-color: #E60C88;
+    color: white;
+
 }
 
 .app label::after {
