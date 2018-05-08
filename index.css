@@ -215,6 +215,13 @@ label.app {
     font-size: 14pt;
 }
 
+.charcount {
+    display: block;
+    font-size: 12pt;
+    margin-bottom: 10px;
+    color: #E60C88;
+}
+
 #buttons {
     display: flex;
     justify-content: space-around;

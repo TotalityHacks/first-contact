@@ -194,12 +194,11 @@ function Question(name, type, required, label, max_length) {
     label_element.addClass("question_label app");
     label_element.prop('for', name);
     label_element.text(label);
-
-    var error_element = $("<span>").addClass("app_error").text('This field is required').hide();
-    label_element.append(error_element);
-    
     wrapper.append(label_element);
 
+    var charcount_element = $("<span>").addClass("charcount").text('').hide();
+    wrapper.append(charcount_element);
+    
     var input = $("<input>");
     if (type == SHORT_ANSWER_TYPE) {
             input.prop('type', 'text');
@@ -233,10 +232,14 @@ function Question(name, type, required, label, max_length) {
         } else {
             wrapper.removeClass('required');
         }
+        if (max_length < 65535) {
+            charcount_element.show().text(input.val().length + '/' + max_length + ' characters');
+        }
         needs_save();
     }
 
     input.keyup(handler).change(handler);
+    handler();
 }
 
 function load_questions(cb) {
@@ -253,7 +256,7 @@ function load_questions(cb) {
         }).done(function(data) {
             questions = [];
             for (var i = 0; i < data.length; i++) {
-                var q = new Question('question_' + data[i].id, data[i].type, true, data[i].text);
+                var q = new Question('question_' + data[i].id, data[i].type, true, data[i].text, data[i].max_length);
                 questions.push(q);
             }
 
