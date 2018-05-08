@@ -287,7 +287,7 @@ function load_questions(cb) {
                 questions.push(q);
             }
 
-            questions.push(new Question('github_username', SHORT_ANSWER_TYPE, true, 'GitHub Username', 39, 'https://github.com/'));
+            questions.push(new Question('github_username', SHORT_ANSWER_TYPE, false, 'GitHub Username', 39, 'https://github.com/'));
 
             $('#personal_info').empty();
             $('#essays').empty();
@@ -303,9 +303,11 @@ function load_questions(cb) {
             cb();
 
         }).fail(function(data) {
+            $('#application_form').show();
+            $('input').hide();
             $('#personal_info').empty();
             $('#essays').empty();
-            $('#personal_info').text(data.responseText);
+            $('#personal_info').html(data.responseText);
         });
     });
 }
@@ -327,9 +329,15 @@ function load_answers(cb) {
         answers.push(["GitHub Username", data.github_username]);
         cb();
     }).fail(function(data) {
-        $('#personal_info').empty();
-        $('#essays').empty();
-        $('#personal_info').text(data.responseText);
+        if (data.status == 404) {
+            cb();
+        } else {
+            $('#application_form').show();
+            $('input').hide();
+            $('#personal_info').empty();
+            $('#essays').empty();
+            $('#personal_info').html(data.responseText);
+        }
     });
 }
 
