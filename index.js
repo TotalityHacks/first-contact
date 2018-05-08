@@ -258,12 +258,14 @@ function Question(name, type, required, label, max_length, prefix) {
         }
     }
 
-    input.keyup(handler).change(handler).click(handler);
-    input.keyup(needs_save).change(needs_save);
-    input.keydown(function(e) {
+    function prevent_prefix_edit(e) {
         if (input[0].selectionStart < prefix.length) e.preventDefault();
         if (input[0].selectionStart === prefix.length && input[0].selectionEnd === prefix.length && e.which == 8) e.preventDefault();
-    })
+    }
+
+    input.keyup(handler).change(handler).click(handler);
+    input.keyup(needs_save).change(needs_save);
+    input.keydown(prevent_prefix_edit).on('cut copy paste', prevent_prefix_edit);
     handler();
 }
 
