@@ -329,7 +329,10 @@ function load_answers(cb) {
         answers.push(["GitHub Username", data.github_username]);
         cb();
     }).fail(function(data) {
-        if (data.status == 404) {
+        if (data.status == 403) {
+            localStorage.removeItem('token');
+            window.location.hash = '#login';
+        } else if (data.status == 404) {
             cb();
         } else {
             $('#application_form').show();
