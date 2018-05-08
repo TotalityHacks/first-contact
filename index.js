@@ -217,12 +217,13 @@ function Question(name, type, required, label, max_length, prefix) {
     
     var input = $("<input>");
     if (type == SHORT_ANSWER_TYPE) {
-            input.prop('type', 'text');
-            input.prop('maxlength', max_length || 524288);
-            this.category = 'profile';
+        input.prop('type', 'text');
+        input.prop('maxlength', max_length || 524288);
+        this.category = 'profile';
     } else if (type == ESSAY_TYPE) {
         wrapper.addClass('essay');
         input = $('<textarea>');
+        input.prop('maxlength', max_length || 524288);
         this.category = 'application';
     }
     input.prop('placeholder', 'Your answer');
