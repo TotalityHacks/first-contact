@@ -258,3 +258,35 @@ input#submit_button {
 .app.required label::after {
     opacity: 1;
 }
+
+.checkbox {
+    position: relative;
+}
+
+.checkbox input {
+    border: 1px solid white;
+    border-radius: 10px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    transition: 0.1s;
+    outline: none;
+    cursor: pointer;
+    display: inline-block;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    margin: 0 10px;
+}
+.checkbox input:checked {
+    background-color: #F05A2A;
+}
+
+.checkbox .terms {
+    display: inline;
+    font-size: 10pt;
+    display: block;
+    min-height: 20px;
+    padding-bottom: 10px;
+    padding-top: 5px;
+    padding-left: 40px;
+}
