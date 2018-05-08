@@ -341,6 +341,8 @@ function load_answers(cb) {
             answers = [];
         } else {
             status = data.status;
+            if (status == 'Submitted')
+                $('#submit_button').val('Resubmit');
             answers = data.questions;
         }
         answers.push(["GitHub Username", data.github_username]);

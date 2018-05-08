@@ -243,7 +243,7 @@ label.app {
 input#submit_button {
     background-color: #E60C88;
     color: white;
-
+    outline: none;
 }
 
 .app label::after {
