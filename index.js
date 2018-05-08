@@ -120,6 +120,7 @@ function register(e) {
 function logout() {
     localStorage.removeItem('token');
     location.hash = '';
+    $('input').show();
 }
 
 $('#logout').click(logout);
