@@ -261,8 +261,10 @@ function Question(name, type, required, label, max_length, prefix) {
         }
         if (required && (input.val().length - prefix.length) <= 0) {
             wrapper.addClass('required');
+            input.addClass('required');
         } else {
             wrapper.removeClass('required');
+            input.removeClass('required');
         }
         if (max_length < 65535) {
             charcount_element.show().text((input.val().length - prefix.length) + '/' + max_length + ' characters');
@@ -271,6 +273,35 @@ function Question(name, type, required, label, max_length, prefix) {
             console.error('The prefix was somehow deleted... will try to fix on next reload.');
             prefix = '';
             this.question_prefix = '';
+        }
+
+
+        if ($('input.required').length == 0) {
+            $('#timeline_profile').removeClass('error');
+            $('#profile_error').text('');
+        } else {
+            $('#timeline_profile').addClass('error');
+        }
+
+        if ($('textarea.required').length == 0) {
+            $('#timeline_application').removeClass('error');
+            $('#application_error').text('');
+        } else {
+            $('#timeline_application').addClass('error');
+        }
+
+        if ($('input.required').length == 0 && $('textarea.required').length == 0) {
+            $('#submit_button').attr('disabled', false);
+            $('#submit_error').html('');
+        } else {
+            $('#submit_button').attr('disabled', true);
+            var str = 'The following questions are required but have no answer: <ul>';
+            var wrappers = $('.wrapper.required');
+            for (var i = 0; i < wrappers.length; i++) {
+                str += '<li>' + $(wrappers[i]).find('label').html() + '</li>';
+            }
+            str += '</ul>';
+            $('#submit_error').html(str);
         }
     }
 
@@ -282,7 +313,8 @@ function Question(name, type, required, label, max_length, prefix) {
     input.keyup(handler).change(handler).click(handler);
     input.keyup(needs_save).change(needs_save);
     input.keydown(prevent_prefix_edit).on('cut copy paste', prevent_prefix_edit);
-    handler();
+
+    this.handler = handler;
 }
 
 function load_questions(cb) {
@@ -314,6 +346,7 @@ function load_questions(cb) {
                 } else if (q.category == 'application') {
                     $('#essays').append(q.container);
                 }
+                q.handler();
             });
             $('#last_saved').text('Saved.');
             cb();
@@ -339,11 +372,15 @@ function load_answers(cb) {
     }).done(function(data) {
         if (data.error) {
             status = 'Saved';
+            $('#timeline_submit').addClass('error');
             answers = [];
         } else {
             status = data.status;
-            if (status == 'Submitted')
-                $('#submit_button').val('Resubmit');
+            if (status == 'Submitted') {
+                $('#submit_button').val('Resubmit!');
+            } else {
+                $('#timeline_submit').addClass('error');
+            }
             answers = data.questions;
         }
         answers.push(["GitHub Username", data.github_username]);
@@ -354,6 +391,7 @@ function load_answers(cb) {
             window.location.hash = '#login';
         } else if (data.status == 404) {
             status = 'Saved';
+            $('#timeline_submit').addClass('error');
             cb();
         } else {
             $('#application_form').show();
@@ -370,10 +408,13 @@ function profile_view(e) {
     $('#application_form').show();
     $('#personal_info').show();
     $('#essays').hide();
-    $('#page_title').text('profile (page 1 of 2)');
+    $('#page_title').text('profile');
     $('#next_page').show();
     $('#previous_page').hide();
     $('#submit_button').hide();
+    $('.timeline_active').removeClass('timeline_active');
+    $('#timeline_profile').addClass('timeline_active');
+    $('#submit_error').hide();
 }
 
 function application_view(e) {
@@ -381,26 +422,39 @@ function application_view(e) {
     $('#application_form').show();
     $('#personal_info').hide();
     $('#essays').show();
-    $('#page_title').text('application (page 2 of 2)');
+    $('#page_title').text('application');
     $('#next_page').hide();
     $('#previous_page').show();
     $('#submit_button').show();
+    $('.timeline_active').removeClass('timeline_active');
+    $('#timeline_application').addClass('timeline_active');
+    $('#submit_error').show();
 }
 
 function submit_button(e) {
     status = 'Submitted';
     if (e) e.preventDefault();
     save(function() {
+        $('#timeline_submit').removeClass('error');
         $('#submit_button').val('Submitted!');
         setTimeout(function() {
-            $('#submit_button').val('Resubmit');
+            $('#submit_button').val('Resubmit!');
         }, 2000);
     })
 }
 
-$('#next_page').click(application_view);
+function submit_timeline_link(e) {
+    application_view();
+    $('html, body').animate({scrollTop: $(document).height()-$(window).height()});
+}
+
 $('#previous_page').click(profile_view);
+$('#next_page').click(application_view);
 $('#submit_button').click(submit_button);
+
+$('#timeline_profile').click(profile_view);
+$('#timeline_application').click(application_view);
+$('#timeline_submit').click(submit_timeline_link);
 
 function save(cb) {
     var data = {};

@@ -59,14 +59,9 @@
                 <form id="application_form">
                     <table id="timeline">
                             <tr>
-                                <th>Profile Information</th>
-                                <th>Application Questions</th>
-                                <th>Submit!</th>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td id="timeline_profile">Profile Information</td>
+                                <td id="timeline_application">Application Questions</td>
+                                <td id="timeline_submit">Submit!</td>
                             </tr>
                         </table>
                     <div class="page" id="personal_info"></div>
@@ -74,6 +69,7 @@
                     <div id="buttons">
                         <input id="next_page" type="submit" value="Next Page"/>
                         <input id="previous_page" type="submit" value="Previous Page"/>
+                        <div id="submit_error"></div>
                         <input id="submit_button" type="submit" value="Submit"/>
                     </div>
                 </form>
