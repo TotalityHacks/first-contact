@@ -217,11 +217,7 @@ function Question(name, type, required, label, max_length, prefix) {
     wrapper.append(charcount_element);
     
     var input = $("<input>");
-    if (type == SHORT_ANSWER_TYPE) {
-        input.prop('type', 'text');
-        input.prop('maxlength', max_length || 524288);
-        this.category = 'profile';
-    } else if (type == NUMBER_TYPE) {
+    if (type == NUMBER_TYPE) {
         input.prop('type', 'number');
         input.prop('maxlength', max_length || 524288);
         this.category = 'profile';
@@ -230,7 +226,12 @@ function Question(name, type, required, label, max_length, prefix) {
         input = $('<textarea>');
         input.prop('maxlength', max_length || 524288);
         this.category = 'application';
+    } else {
+        input.prop('type', 'text');
+        input.prop('maxlength', max_length || 524288);
+        this.category = 'profile';
     }
+    
     input.prop('placeholder', 'Your answer');
     input.prop('id', name);
     input.addClass('app');
