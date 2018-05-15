@@ -310,8 +310,9 @@ input[disabled]#submit_button {
 }
 
 #timeline td {
-    background-color: #4a4a4a;
-    color: white;
+    background-color: white;
+    color: #E60C88;
+    border: 1px solid #E60C88;
     width: 33%;
     text-align: center;
     cursor: pointer;
@@ -327,7 +328,8 @@ input[disabled]#submit_button {
 
 #timeline td.timeline_active {
     font-weight: bold;
-    background-color: #F05A2A;
+    background-color: #E60C88;
+    color: white;
 }
 
 #timeline td::after {
