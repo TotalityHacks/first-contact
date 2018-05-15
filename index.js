@@ -116,9 +116,10 @@ function register(e) {
         contentType: 'application/json'
     })
         .done(function(data) {
+            $('#registration_form .checkbox').hide();
             $('#registration_form input').hide();
             $('#registration_form label').hide();
-            $('#register_error').text(data.message).show();
+            $('#register_msg').text(data.message).show();
             form.children('input').prop('disabled', false);
         }).fail(function(data) {
             var errors = data.responseJSON.errors;
