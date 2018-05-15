@@ -9,6 +9,7 @@ var questions;
 var status;
 
 var SHORT_ANSWER_TYPE = 'text';
+var NUMBER_TYPE = 'number';
 var ESSAY_TYPE = 'essay';
 
 $('#no_js').hide();
@@ -218,6 +219,10 @@ function Question(name, type, required, label, max_length, prefix) {
     var input = $("<input>");
     if (type == SHORT_ANSWER_TYPE) {
         input.prop('type', 'text');
+        input.prop('maxlength', max_length || 524288);
+        this.category = 'profile';
+    } else if (type == NUMBER_TYPE) {
+        input.prop('type', 'number');
         input.prop('maxlength', max_length || 524288);
         this.category = 'profile';
     } else if (type == ESSAY_TYPE) {
