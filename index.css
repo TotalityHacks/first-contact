@@ -306,9 +306,6 @@ input[disabled]#submit_button {
     height: 2em;
 }
 
-#timeline th {
-}
-
 #timeline td {
     background-color: white;
     color: #E60C88;
@@ -339,4 +336,24 @@ input[disabled]#submit_button {
 
 #timeline td.error::after {
     content: "\2718";
+}
+
+#resume_button {
+    width: 95%;
+    height: 50px;
+    padding: 5px 10px;
+    background-color: white;
+    border: 2px solid #E60C88;
+    border-radius: 10px;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 16pt;
+    font-weight: bold;
+    color: #E60C88;
+    cursor: pointer;
+    margin: 10px;
+    outline: none;
+}
+
+#hidden {
+    display: none;
 }

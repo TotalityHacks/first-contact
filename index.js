@@ -3,10 +3,12 @@ var LOGIN_URL = BASE_URL + 'login/';
 var SIGNUP_URL = BASE_URL + 'registration/signup/';
 var APPLICATION_URL = BASE_URL + 'application/';
 var QUESTIONS_URL = APPLICATION_URL + 'questions/';
-var SUBMIT_URL = APPLICATION_URL + 'submit/'
+var SUBMIT_URL = APPLICATION_URL + 'submit/';
+var RESUME_URL = APPLICATION_URL + 'resume/';
 
 var questions;
 var status;
+var resume_uploaded = false;
 
 var SHORT_ANSWER_TYPE = 'text';
 var NUMBER_TYPE = 'number';
@@ -297,7 +299,7 @@ function Question(name, type, required, label, max_length, prefix) {
             $('#timeline_application').addClass('error');
         }
 
-        if ($('input.required').length == 0 && $('textarea.required').length == 0) {
+        if ($('input.required').length == 0 && $('textarea.required').length == 0 && resume_uploaded) {
             $('#submit_button').attr('disabled', false);
             $('#submit_error').html('');
         } else {
@@ -355,6 +357,9 @@ function load_questions(cb) {
                 }
                 q.handler();
             });
+
+            create_resume_button();
+
             $('#last_saved').text('Saved.');
             cb();
 
@@ -365,6 +370,33 @@ function load_questions(cb) {
             $('#essays').empty();
             $('#personal_info').html(data.responseText);
         });
+    });
+}
+
+function create_resume_button() {
+    var wrapper = $("<div>");
+    wrapper.addClass("wrapper app question_file_button");
+    
+    var label_element = $("<label>");
+    label_element.addClass("question_label app");
+    label_element.prop('for', 'resume_button');
+    label_element.text("Resume");
+    wrapper.append(label_element);
+
+    var charcount_element = $("<span>").addClass("charcount").text('').hide();
+    wrapper.append(charcount_element);
+    
+    var input = $("<input>");
+    input.prop('id', 'resume_button');
+    input.addClass('app');
+    input.val(resume_uploaded ? 'Reupload' : 'Upload');
+    input.prop('type', 'button');
+    wrapper.append(input);
+
+    $('#personal_info').append(wrapper);
+
+    $('#resume_button').click(function() {
+        $('#file_input').click();
     });
 }
 
@@ -383,6 +415,7 @@ function load_answers(cb) {
             answers = [];
         } else {
             status = data.status;
+            resume_uploaded = (data.resume && data.resume.length > 0);
             if (status == 'Submitted') {
                 $('#submit_button').val('Resubmit!');
             } else {
@@ -514,4 +547,42 @@ figure_out_current_view();
 
 $(window).on('beforeunload', function(e) {
     if (needs_save_time) return 'Are you sure you want to quit?';
+});
+
+$('#file_input').change(function(e) {
+    var files = e.target.files;
+    if (files.length == 0) return;
+    var file = files[0];
+    console.log(file);
+    // var reader = new FileReader();
+    // reader.onload = function(e) {
+        var formData = new FormData();
+        formData.append("file", file);
+        formData.append("filename", file.name);
+        formData.append("type", file.type);
+        console.log(formData);
+        $.ajax({
+            type:"POST",
+            url: RESUME_URL,
+            data: formData,
+            processData: false,
+            contentType: false,
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("Authorization", "Token " + localStorage.getItem('token'));
+            }
+        })
+            .done(function(data) {
+                $('#resume_button').val('Uploaded');
+                resume_uploaded = true;
+                setTimeout(function() {
+                    $('#resume_button').val('Reupload');
+                }, 2000);
+            }).fail(function(data) {
+                $('#resume_button').val('Error Uploading');
+            });
+    // }
+    // reader.onerror = function(e) {
+    //     $('#resume_button').val('Error Uploading');
+    // }
+    // reader.readAsArrayBuffer(file);
 });
