@@ -314,7 +314,7 @@ function check_errors() {
         $('#timeline_application').addClass('error');
     }
 
-    if ($('input.required').length == 0 && $('textarea.required').length == 0 && resume_uploaded) {
+    if ($('input.required').length == 0 && $('textarea.required').length == 0) {
         $('#submit_button').attr('disabled', false);
         $('#submit_error').html('');
     } else {
