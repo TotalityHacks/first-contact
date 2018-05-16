@@ -284,34 +284,7 @@ function Question(name, type, required, label, max_length, prefix) {
             this.question_prefix = '';
         }
 
-
-        if ($('input.required').length == 0) {
-            $('#timeline_profile').removeClass('error');
-            $('#profile_error').text('');
-        } else {
-            $('#timeline_profile').addClass('error');
-        }
-
-        if ($('textarea.required').length == 0) {
-            $('#timeline_application').removeClass('error');
-            $('#application_error').text('');
-        } else {
-            $('#timeline_application').addClass('error');
-        }
-
-        if ($('input.required').length == 0 && $('textarea.required').length == 0 && resume_uploaded) {
-            $('#submit_button').attr('disabled', false);
-            $('#submit_error').html('');
-        } else {
-            $('#submit_button').attr('disabled', true);
-            var str = 'The following questions are required but have no answer: <ul>';
-            var wrappers = $('.wrapper.required');
-            for (var i = 0; i < wrappers.length; i++) {
-                str += '<li>' + $(wrappers[i]).find('label').html() + '</li>';
-            }
-            str += '</ul>';
-            $('#submit_error').html(str);
-        }
+        check_errors();
     }
 
     function prevent_prefix_edit(e) {
@@ -324,6 +297,36 @@ function Question(name, type, required, label, max_length, prefix) {
     input.keydown(prevent_prefix_edit).on('cut copy paste', prevent_prefix_edit);
 
     this.handler = handler;
+}
+
+function check_errors() {
+    if ($('input.required').length == 0) {
+        $('#timeline_profile').removeClass('error');
+        $('#profile_error').text('');
+    } else {
+        $('#timeline_profile').addClass('error');
+    }
+
+    if ($('textarea.required').length == 0) {
+        $('#timeline_application').removeClass('error');
+        $('#application_error').text('');
+    } else {
+        $('#timeline_application').addClass('error');
+    }
+
+    if ($('input.required').length == 0 && $('textarea.required').length == 0 && resume_uploaded) {
+        $('#submit_button').attr('disabled', false);
+        $('#submit_error').html('');
+    } else {
+        $('#submit_button').attr('disabled', true);
+        var str = 'The following questions are required but have no answer: <ul>';
+        var wrappers = $('.wrapper.required');
+        for (var i = 0; i < wrappers.length; i++) {
+            str += '<li>' + $(wrappers[i]).find('label').html() + '</li>';
+        }
+        str += '</ul>';
+        $('#submit_error').html(str);
+    }
 }
 
 function load_questions(cb) {
@@ -415,7 +418,7 @@ function load_answers(cb) {
             answers = [];
         } else {
             status = data.status;
-            resume_uploaded = (data.resume && data.resume.length > 0);
+            resume_uploaded = (data.resumes && data.resumes.length > 0);
             if (status == 'Submitted') {
                 $('#submit_button').val('Resubmit!');
             } else {
@@ -574,6 +577,7 @@ $('#file_input').change(function(e) {
             .done(function(data) {
                 $('#resume_button').val('Uploaded');
                 resume_uploaded = true;
+                check_errors();
                 setTimeout(function() {
                     $('#resume_button').val('Reupload');
                 }, 2000);

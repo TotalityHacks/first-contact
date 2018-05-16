@@ -258,15 +258,16 @@ input[disabled]#submit_button {
 
 .app label::after {
     transition: 1s;
-    content: "(Required)";
     color: red;
     font-size: 12pt;
-    margin-left: 10px;
+    margin-left: 5px;
     opacity: 0;
+    content: "";
 }
 
 .app.required label::after {
     opacity: 1;
+    content: "*";
 }
 
 .checkbox {
