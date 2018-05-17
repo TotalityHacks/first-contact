@@ -202,7 +202,7 @@ function resend(e){
                 form.children('input').prop('disabled', false);
             }).fail(function(data) {
                 form.children('input').prop('disabled', false);
-                var text = "An error occurred sending the password reset email.";
+                var text = "An error occurred resending the confirmation email.";
                 if (data && data.responseJSON && !data.responseJSON.success && data.responseJSON.message) {
                     text = data.responseJSON.message;
                 }
