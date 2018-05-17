@@ -2,7 +2,7 @@
 var LOGIN_URL = BASE_URL + 'login/';
 var SIGNUP_URL = BASE_URL + 'registration/signup/';
 var RESET_URL = BASE_URL + 'registration/reset/';
-var RESEND_URL = BASE_URL + 'registration/resend/';
+var RESEND_URL = BASE_URL + 'registration/resend_email/';
 var APPLICATION_URL = BASE_URL + 'application/';
 var QUESTIONS_URL = APPLICATION_URL + 'questions/';
 var SUBMIT_URL = APPLICATION_URL + 'submit/';
