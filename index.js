@@ -2,6 +2,7 @@
 var LOGIN_URL = BASE_URL + 'login/';
 var SIGNUP_URL = BASE_URL + 'registration/signup/';
 var RESET_URL = BASE_URL + 'registration/reset/';
+var RESEND_URL = BASE_URL + 'registration/resend/';
 var APPLICATION_URL = BASE_URL + 'application/';
 var QUESTIONS_URL = APPLICATION_URL + 'questions/';
 var SUBMIT_URL = APPLICATION_URL + 'submit/';
@@ -122,6 +123,7 @@ function register(e) {
             $('#registration_form .checkbox').hide();
             $('#registration_form input').hide();
             $('#registration_form label').hide();
+            $('#registration_resend').show();
             $('#register_msg').text(data.message).show();
             form.children('input').prop('disabled', false);
         }).fail(function(data) {
@@ -163,9 +165,48 @@ function reset(e){
                 $('#email_query').text(data.message);
                 form.children('input').prop('disabled', false);
             }).fail(function(data) {
-                var errors = data.responseJSON.errors;
-                if (!errors) return;
                 form.children('input').prop('disabled', false);
+                var text = "An error occurred sending the password reset email.";
+                if (data && data.responseJSON && !data.responseJSON.success && data.responseJSON.message) {
+                    text = data.responseJSON.message;
+                }
+                $('#email_query').text(text);
+            });
+}
+
+function resend(e){
+    if (e) e.preventDefault();
+    
+    var form = $('#resend_form');
+    var email = form.children('input[name=email]').val();
+    
+    var error = false;
+    if (email === ''){
+        error = true;
+    }
+    if (error) return;
+    
+    var params = {
+        email: email
+    };
+    form.children('input').prop('disabled' , true);
+    $.ajax({
+        type:"POST",
+        url: RESEND_URL,
+        dataType: 'json',
+        data: JSON.stringify(params),
+        contentType: 'application/json'
+    })
+        .done(function(data) {
+                $('#resend_email_query').text(data.message);
+                form.children('input').prop('disabled', false);
+            }).fail(function(data) {
+                form.children('input').prop('disabled', false);
+                var text = "An error occurred sending the password reset email.";
+                if (data && data.responseJSON && !data.responseJSON.success && data.responseJSON.message) {
+                    text = data.responseJSON.message;
+                }
+                $('#resend_email_query').text(text);
             });
 }
 
@@ -180,27 +221,41 @@ $('#logout').click(logout);
 $('#login_form').submit(login);
 $('#registration_form').submit(register);
 $('#reset_form').submit(reset);
+$('#resend_form').submit(resend);
 
 function login_form() {
     $('#application, #registration_form').hide();
     $('#reset_form').hide();
+    $('#resend_form').hide();
     $('#login_registration, #login_form').show();
     $('#login_view').addClass('selected');
+    $('#registration_view').removeClass('selected');
 }
 
 function registration_form() {
     $('#application, #login_form').hide();
     $('#reset_form').hide();
+    $('#resend_form').hide();
     $('#login_registration, #registration_form').show();
     $('#registration_view').addClass('selected');
+    $('#login_view').removeClass('selected');
 }
 
 function reset_form() {
-    $('#application, #login_form , #registration_form').hide();
+    $('#application, #login_form , #registration_form, #resend_form').hide();
     $('#login_view').addClass('selected');
+    $('#registration_view').removeClass('selected');
 
     $('#reset_form').show();
 
+}
+
+function resend_form() {
+    $('#application, #login_form , #registration_form, #reset_form').hide();
+    $('#login_view').addClass('selected');
+    $('#registration_view').removeClass('selected');
+
+    $('#resend_form').show();
 }
 
 function load_application() {
@@ -222,6 +277,9 @@ function figure_out_current_view() {
     }
     else if (window.location.hash == "#reset") {
         reset_form();
+    }
+    else if (window.location.hash == "#resend") {
+        resend_form();
     }
     else if (window.location.hash == "#application") {
         if (!localStorage.getItem('token')) {
