@@ -477,6 +477,7 @@ function application_view(e) {
 function submit_button(e) {
     status = 'Submitted';
     if (e) e.preventDefault();
+    $('#submit_button').val('Submitting...');
     save(function() {
         $('#timeline_submit').removeClass('error');
         $('#submit_button').val('Submitted!');
