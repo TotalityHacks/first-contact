@@ -102,13 +102,19 @@ input[disabled].lr {
     opacity: 0.5;
 }
 
-#forgot {
+#reset {
     text-align: center;
     width: 100%;
     font-size: 12pt;
     padding-top: 10px;
     color: white;
     text-decoration: none;
+}
+
+#email_query{
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 10px
 }
 
 #application {
@@ -132,6 +138,7 @@ input[disabled].lr {
     font-variant: small-caps;
     display: flex;
     justify-content: flex-start;
+    overflow: auto;
 }
 
 #sun {
@@ -140,7 +147,7 @@ input[disabled].lr {
 }
 
 #page_title {
-    margin: 0 20px;
+    margin: 0 -200 -20px 0;
 }
 
 #last_saved {
@@ -158,6 +165,7 @@ input[disabled].lr {
     align-self: flex-end;
     font-variant: normal;
     color: white;
+    white-space: nowrap;
 }
 
 #application_form {
@@ -310,8 +318,9 @@ input[disabled]#submit_button {
 }
 
 #timeline td {
-    background-color: #4a4a4a;
-    color: white;
+    background-color: white;
+    color: #E60C88;
+    border: 1px solid #E60C88;
     width: 33%;
     text-align: center;
     cursor: pointer;
@@ -327,7 +336,8 @@ input[disabled]#submit_button {
 
 #timeline td.timeline_active {
     font-weight: bold;
-    background-color: #F05A2A;
+    background-color: #E60C88;
+    color: white;
 }
 
 #timeline td::after {

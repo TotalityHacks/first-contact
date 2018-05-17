@@ -1,6 +1,7 @@
 "use strict";
 var LOGIN_URL = BASE_URL + 'login/';
 var SIGNUP_URL = BASE_URL + 'registration/signup/';
+var RESET_URL = BASE_URL + 'registration/reset/';
 var APPLICATION_URL = BASE_URL + 'application/';
 var QUESTIONS_URL = APPLICATION_URL + 'questions/';
 var SUBMIT_URL = APPLICATION_URL + 'submit/'
@@ -131,6 +132,39 @@ function register(e) {
 
 }
 
+function reset(e){
+    if (e) e.preventDefault();
+    
+    var form = $('#reset_form');
+    var email = form.children('input[name=email]').val();
+    
+    var error = false;
+    if (email === ''){
+        error = true;
+    }
+    if (error) return;
+    
+    var params = {
+        email: email
+    };
+    form.children('input').prop('disabled' , true);
+    $.ajax({
+        type:"POST",
+        url: RESET_URL,
+        dataType: 'json',
+        data: JSON.stringify(params),
+        contentType: 'application/json'
+    })
+        .done(function(data) {
+                $('#email_query').text(data.message);
+                form.children('input').prop('disabled', false);
+            }).fail(function(data) {
+                var errors = data.responseJSON.errors;
+                if (!errors) return;
+                form.children('input').prop('disabled', false);
+            });
+}
+
 function logout() {
     localStorage.removeItem('token');
     location.hash = '';
@@ -141,19 +175,28 @@ $('#logout').click(logout);
 
 $('#login_form').submit(login);
 $('#registration_form').submit(register);
+$('#reset_form').submit(reset);
 
 function login_form() {
     $('#application, #registration_form').hide();
+    $('#reset_form').hide();
     $('#login_registration, #login_form').show();
     $('#login_view').addClass('selected');
-    $('#registration_view').removeClass('selected');
 }
 
 function registration_form() {
     $('#application, #login_form').hide();
+    $('#reset_form').hide();
     $('#login_registration, #registration_form').show();
     $('#registration_view').addClass('selected');
-    $('#login_view').removeClass('selected');
+}
+
+function reset_form() {
+    $('#application, #login_form , #registration_form').hide();
+    $('#login_view').addClass('selected');
+
+    $('#reset_form').show();
+
 }
 
 function load_application() {
@@ -173,8 +216,8 @@ function figure_out_current_view() {
         }
         registration_form();
     }
-    else if (window.location.hash == "#forgot") {
-        alert("Password recovery has not been implemented.");
+    else if (window.location.hash == "#reset") {
+        reset_form();
     }
     else if (window.location.hash == "#application") {
         if (!localStorage.getItem('token')) {
