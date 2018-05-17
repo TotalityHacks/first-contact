@@ -7,6 +7,7 @@ var APPLICATION_URL = BASE_URL + 'application/';
 var QUESTIONS_URL = APPLICATION_URL + 'questions/';
 var SUBMIT_URL = APPLICATION_URL + 'submit/';
 var RESUME_URL = APPLICATION_URL + 'resume/';
+var SAVE_URL = APPLICATION_URL + 'save/';
 
 var questions;
 var status;
@@ -585,7 +586,7 @@ function submit_button(e) {
         setTimeout(function() {
             $('#submit_button').val('Resubmit!');
         }, 2000);
-    })
+    }, true);
 }
 
 function submit_timeline_link(e) {
@@ -601,7 +602,7 @@ $('#timeline_profile').click(profile_view);
 $('#timeline_application').click(application_view);
 $('#timeline_submit').click(submit_timeline_link);
 
-function save(cb) {
+function save(cb, should_submit) {
     var data = {};
     data['status'] = status;
     for (var i = 0; i < questions.length; i++) {
@@ -610,7 +611,7 @@ function save(cb) {
     }
     $.ajax({
         type:"POST",
-        url: SUBMIT_URL,
+        url: should_submit ? SUBMIT_URL : SAVE_URL,
         dataType: "json",
         beforeSend: function(xhr) {
             xhr.setRequestHeader("Authorization", "Token " + localStorage.getItem('token'));
