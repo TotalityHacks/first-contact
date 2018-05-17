@@ -3,6 +3,7 @@
     <head>
         <title>Registration</title>
         <link rel="stylesheet" type="text/css" href="index.css"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
         <div id="no_js">
@@ -16,7 +17,6 @@
                 <a id="lr_logo" href="#"><img src="svg-white.svg" alt="Totality Logo"/></a>
                 <div id="login_selector" class="lr" >
                     <a id="login_view" class="lr selector" href="#login">Login</a>
-                    |
                     <a id="registration_view" class="lr selector" href="#register">Register</a>
                 </div>
                 <form id="login_form" class="lr" >
@@ -26,7 +26,7 @@
                     <label id="login_password_error" for="login_password" class="form_error"></label>
                     <input type="password" name="password" id="login_password" class="lr" placeholder="Password"/>
                     <input type="submit" name="login" class="lr" value="Login"/>
-<!--                    <a id="forgot" class="lr" href="#forgot">Forgot password?</a>-->
+                    <a id="reset" class="lr" href="#reset">Forgot password?</a>
                 </form>
                 <form id="registration_form" class="lr" >
                     <div id="register_error" class="form_error"></div>
@@ -49,6 +49,15 @@
                     </div>
                     <input type="submit" name="register" class="lr" value="Register"/>
                 </form>
+                
+                <form id="reset_form" class="lr">
+                    <div id="email_query">
+                        Enter email below to reset your password.
+                    </div>
+                    <input type="text" name="email" id="reset_email" class="lr" placeholder="Email"/>
+                    <input type="submit" name="reset" class="lr" value="Submit"/>
+                </form>
+                
             </div>
             <div id="application">
                 <div id="header">
