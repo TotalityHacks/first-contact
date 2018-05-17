@@ -557,36 +557,30 @@ $('#file_input').change(function(e) {
     if (files.length == 0) return;
     var file = files[0];
     console.log(file);
-    // var reader = new FileReader();
-    // reader.onload = function(e) {
-        var formData = new FormData();
-        formData.append("file", file);
-        formData.append("filename", file.name);
-        formData.append("type", file.type);
-        console.log(formData);
-        $.ajax({
-            type:"POST",
-            url: RESUME_URL,
-            data: formData,
-            processData: false,
-            contentType: false,
-            beforeSend: function(xhr) {
-                xhr.setRequestHeader("Authorization", "Token " + localStorage.getItem('token'));
-            }
-        })
-            .done(function(data) {
-                $('#resume_button').val('Uploaded');
-                resume_uploaded = true;
-                check_errors();
-                setTimeout(function() {
-                    $('#resume_button').val('Reupload');
-                }, 2000);
-            }).fail(function(data) {
-                $('#resume_button').val('Error Uploading');
-            });
-    // }
-    // reader.onerror = function(e) {
-    //     $('#resume_button').val('Error Uploading');
-    // }
-    // reader.readAsArrayBuffer(file);
+    var formData = new FormData();
+    formData.append("file", file);
+    formData.append("filename", file.name);
+    formData.append("type", file.type);
+    console.log(formData);
+    $('#resume_button').val('Uploading...');
+    $.ajax({
+        type:"POST",
+        url: RESUME_URL,
+        data: formData,
+        processData: false,
+        contentType: false,
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader("Authorization", "Token " + localStorage.getItem('token'));
+        }
+    })
+        .done(function(data) {
+            $('#resume_button').val('Uploaded');
+            resume_uploaded = true;
+            check_errors();
+            setTimeout(function() {
+                $('#resume_button').val('Reupload');
+            }, 2000);
+        }).fail(function(data) {
+            $('#resume_button').val('Error Uploading');
+        });
 });
