@@ -390,3 +390,6 @@ input[disabled]#submit_button {
 #hidden {
     display: none;
 }
+div.awesomplete {
+    display: block;
+}

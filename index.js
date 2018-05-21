@@ -336,11 +336,14 @@ function Question(name, type, required, label, max_length, prefix) {
         input.prop('maxlength', max_length || 524288);
         this.category = 'profile';
     }
-    
+
     input.prop('placeholder', 'Your answer');
     input.prop('id', name);
     input.addClass('app');
     wrapper.append(input);
+    if (label === "School") {
+        new Awesomplete(input[0], {list: ["Stanford", "Duke", "USC"]});
+    }
 
     this.container = wrapper;
     this.input = input;
