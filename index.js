@@ -349,9 +349,9 @@ function Question(name, type, required, label, max_length, prefix) {
         $.get({
             url: SCHOOLS_URL,
             success: function (results) {
-                console.log(results["schools"]);
                 new Awesomplete(input[0], {
-                    list: results["schools"]
+                    list: results["schools"],
+                    minChars: 1,
                 });
             }
         });
