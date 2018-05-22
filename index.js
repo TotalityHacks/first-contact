@@ -3,6 +3,7 @@ var LOGIN_URL = BASE_URL + 'login/';
 var SIGNUP_URL = BASE_URL + 'registration/signup/';
 var RESET_URL = BASE_URL + 'registration/reset/';
 var RESEND_URL = BASE_URL + 'registration/resend_email/';
+var SCHOOLS_URL = BASE_URL + 'registration/schools_list';
 var APPLICATION_URL = BASE_URL + 'application/';
 var QUESTIONS_URL = APPLICATION_URL + 'questions/';
 var SUBMIT_URL = APPLICATION_URL + 'submit/';
@@ -18,6 +19,8 @@ var NUMBER_TYPE = 'number';
 var ESSAY_TYPE = 'essay';
 
 $('#no_js').hide();
+
+
 
 function login(e) {
     if (e) e.preventDefault();
@@ -341,8 +344,18 @@ function Question(name, type, required, label, max_length, prefix) {
     input.prop('id', name);
     input.addClass('app');
     wrapper.append(input);
+
     if (label === "School") {
-        new Awesomplete(input[0], {list: ["Stanford", "Duke", "USC"]});
+        $.get({
+            url: SCHOOLS_URL,
+            success: function (results) {
+                console.log(results["schools"]);
+                new Awesomplete(input[0], {
+                    list: results["schools"]
+                });
+            }
+        });
+
     }
 
     this.container = wrapper;
