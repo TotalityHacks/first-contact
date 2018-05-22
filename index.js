@@ -325,7 +325,16 @@ function Question(name, type, required, label, max_length, prefix) {
     wrapper.append(charcount_element);
     
     var input = $("<input>");
-    if (type == NUMBER_TYPE) {
+    if (label === "College Graduation Year") {
+        input = $('<select></select>');
+        input.append($('<option value="2019">2019</option>'));
+        input.append($('<option value="2020">2020</option>'));
+        input.append($('<option value="2021">2021</option>'));
+        input.append($('<option value="2022">2022</option>'));
+        input.append($('<option value="HS">High School</option>'));
+        this.category = 'profile';
+    }
+    else if (type == NUMBER_TYPE) {
         input.prop('type', 'number');
         input.prop('maxlength', max_length || 524288);
         this.category = 'profile';
@@ -349,7 +358,6 @@ function Question(name, type, required, label, max_length, prefix) {
         $.get({
             url: SCHOOLS_URL,
             success: function (results) {
-                console.log(results["schools"]);
                 new Awesomplete(input[0], {
                     list: results["schools"]
                 });
