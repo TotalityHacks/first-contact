@@ -327,6 +327,7 @@ function Question(name, type, required, label, max_length, prefix) {
     var input = $("<input>");
     if (label === "College Graduation Year") {
         input = $('<select></select>');
+        input.append($('<option disabled selected value=""> -- select an option -- </option>'));
         input.append($('<option value="2019">2019</option>'));
         input.append($('<option value="2020">2020</option>'));
         input.append($('<option value="2021">2021</option>'));
@@ -394,7 +395,10 @@ function Question(name, type, required, label, max_length, prefix) {
         if (element.selectionStart < prefix.length) {
             element.selectionStart = prefix.length;
         }
-        if (required && (input.val().length - prefix.length) <= 0) {
+        console.log(input);
+        console.log(input.val());
+        console.log(input.val()== null);
+        if (required && (input.val() == null || (input.val().length - prefix.length) <= 0)) {
             wrapper.addClass('required');
             input.addClass('required');
         } else {
@@ -404,7 +408,7 @@ function Question(name, type, required, label, max_length, prefix) {
         if (max_length < 65535) {
             charcount_element.show().text((input.val().length - prefix.length) + '/' + max_length + ' characters');
         }
-        if (input.val().indexOf(prefix) != 0) {
+        if (input.val() != null && input.val().indexOf(prefix) != 0) {
             console.error('The prefix was somehow deleted... will try to fix on next reload.');
             prefix = '';
             this.question_prefix = '';
