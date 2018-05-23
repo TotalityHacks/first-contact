@@ -227,7 +227,7 @@ input[disabled].lr {
     width: 100%;
 }
 
-input.app, textarea.app {
+input.app, textarea.app, select.app {
     width: 95%;
     font-family: 'Ubuntu', sans-serif;
     font-size: 14pt;
