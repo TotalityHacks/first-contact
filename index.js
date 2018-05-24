@@ -473,9 +473,9 @@ function load_questions(cb) {
             }
         }).done(function(data) {
             questions = [];
-            // data.sort(function(a, b) {
-            //     return a.id - b.id;
-            // })
+            data.sort(function(a, b) {
+                return a.id - b.id;
+            });
             for (var i = 0; i < data.length; i++) {
                 var q = new Question('question_' + data[i].id, data[i].type, true, data[i].text, data[i].max_length, data[i].prefix);
                 questions.push(q);
