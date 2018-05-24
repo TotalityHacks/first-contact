@@ -382,7 +382,7 @@ function Question(name, type, required, label, max_length, prefix) {
 
     function handler() {
         var element = input[0];
-        if (prefix) {
+        if (type == SHORT_ANSWER_TYPE && prefix) {
             if (!input.val().indexOf(prefix) == 0 && input.val().indexOf(prefix.slice(0, prefix.length-1)) == 0) {
                 var start = element.selectionStart;
                 input.val(prefix + input.val().slice(prefix.length - 1));
@@ -393,7 +393,7 @@ function Question(name, type, required, label, max_length, prefix) {
         if (prefix && input.val() === '') {
             input.val(prefix);
         }
-        if (element.selectionStart < prefix.length) {
+        if (type == SHORT_ANSWER_TYPE && element.selectionStart < prefix.length) {
             element.selectionStart = prefix.length;
         }
         console.log(input);
@@ -473,6 +473,9 @@ function load_questions(cb) {
             }
         }).done(function(data) {
             questions = [];
+            // data.sort(function(a, b) {
+            //     return a.id - b.id;
+            // })
             for (var i = 0; i < data.length; i++) {
                 var q = new Question('question_' + data[i].id, data[i].type, true, data[i].text, data[i].max_length, data[i].prefix);
                 questions.push(q);
