@@ -221,7 +221,6 @@ function logout() {
 }
 
 $('#logout').click(logout);
-
 $('#login_form').submit(login);
 $('#registration_form').submit(register);
 $('#reset_form').submit(reset);
@@ -251,7 +250,6 @@ function reset_form() {
     $('#registration_view').removeClass('selected');
 
     $('#reset_form').show();
-
 }
 
 function resend_form() {
@@ -477,7 +475,7 @@ function load_questions(cb) {
                 return a.id - b.id;
             });
             for (var i = 0; i < data.length; i++) {
-                var q = new Question('question_' + data[i].id, data[i].type, true, data[i].text, data[i].max_length, data[i].prefix);
+                var q = new Question('question_' + data[i].id, data[i].type, data[i].required, data[i].text, data[i].max_length, data[i].prefix);
                 questions.push(q);
             }
 
