@@ -7,7 +7,7 @@ var APPLICATION_URL = BASE_URL + 'application/';
 var SCHOOLS_URL = APPLICATION_URL + 'schools_list/';
 var QUESTIONS_URL = APPLICATION_URL + 'questions/';
 var SUBMIT_URL = APPLICATION_URL + 'submit/';
-var RESUME_URL = APPLICATION_URL + 'resume/';
+var RESUME_URL = APPLICATION_URL + 'resumes/';
 var SAVE_URL = APPLICATION_URL + 'save/';
 
 var questions;
