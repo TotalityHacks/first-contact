@@ -41,6 +41,18 @@ body > div {
     width: 325px;
 }
 
+#login_registration a {
+    font-weight: bold;
+}
+
+#registration_form.lr{
+    margin: 15px;
+}
+
+#register_msg{
+    text-align: center;
+}
+
 #lr_logo {
     width: 90%;
     margin-top: 20vh;
@@ -140,6 +152,8 @@ input[disabled].lr {
     padding-top: 10px;
     color: white;
     text-decoration: none;
+    margin-top: 15px;
+
 }
 
 #email_query{
