@@ -334,7 +334,6 @@ function Question(name, type, required, label, max_length, prefix) {
         input.append($('<option value="2020">2020</option>'));
         input.append($('<option value="2021">2021</option>'));
         input.append($('<option value="2022">2022</option>'));
-        input.append($('<option value="HS">High School</option>'));
         this.category = 'profile';
 
     }
