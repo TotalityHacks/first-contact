@@ -314,11 +314,14 @@ function Question(name, type, required, label, max_length, prefix) {
     var wrapper = $("<div>");
     wrapper.addClass("wrapper app question_" + type);
     
-    var label_element = $("<label>");
-    label_element.addClass("question_label app");
-    label_element.prop('for', name);
-    label_element.text(label);
-    wrapper.append(label_element);
+    
+    if (type != CHECK_TYPE){
+        var label_element = $("<label>");
+        label_element.addClass("question_label app");
+        label_element.prop('for', name);
+        label_element.text(label);
+        wrapper.append(label_element);
+    }
 
     var charcount_element = $("<span>").addClass("charcount").text('').hide();
     wrapper.append(charcount_element);
@@ -335,7 +338,7 @@ function Question(name, type, required, label, max_length, prefix) {
         this.category = 'profile';
 
     }
-    else if (label === "What do you identify as?") {
+    else if (label === "What gender do you identify as?") {
         input = $('<select></select>');
         input.append($('<option disabled selected value=""> -- select an option -- </option>'));
         input.append($('<option value="male">Male</option>'));
@@ -370,6 +373,7 @@ function Question(name, type, required, label, max_length, prefix) {
     else if (type == CHECK_TYPE){
         wrapper.addClass('check')
         input = $('<input type="checkbox"></input>')
+        input.addClass('check_label');
         this.category = 'application';
     }
     else {
@@ -380,8 +384,17 @@ function Question(name, type, required, label, max_length, prefix) {
 
     input.prop('placeholder', 'Your answer');
     input.prop('id', name);
-    input.addClass('app');
+    if (type != CHECK_TYPE){
+        input.addClass('app');
+    }
     wrapper.append(input);
+    
+    if (type == CHECK_TYPE){
+        var label_element = $("<label>");
+        label_element.addClass("question_label check_label");
+        label_element.text(label);
+        wrapper.append(label_element);
+    }
 
     if (label === "School") {
         $.get({
@@ -406,10 +419,17 @@ function Question(name, type, required, label, max_length, prefix) {
             }
         }
     }
-    if (required && input.val() === '') wrapper.addClass('required');
+    if (required && input.val() === '') {
+        wrapper.addClass('required');
+    }
+    else if (required && type == CHECK_TYPE){
+        wrapper.addClass('required');
+    }
 
     function handler() {
         var element = input[0];
+        console.log(element);
+ 
         if (type == SHORT_ANSWER_TYPE && prefix) {
             if (!input.val().indexOf(prefix) == 0 && input.val().indexOf(prefix.slice(0, prefix.length-1)) == 0) {
                 var start = element.selectionStart;
@@ -433,6 +453,19 @@ function Question(name, type, required, label, max_length, prefix) {
         } else {
             wrapper.removeClass('required');
             input.removeClass('required');
+        }
+        
+        if (type == CHECK_TYPE){
+            console.log('removed?: ' + $('element.check_label').is(':checked'));
+            if ($('input.check_label').is(':checked')){
+                console.log('run remove');
+                wrapper.removeClass('required');
+                input.removeClass('required');
+            } else{  
+                console.log('run add');
+                wrapper.addClass('required');
+                input.addClass('required');
+            }
         }
         if (max_length < 65535) {
             charcount_element.show().text((input.val().length - prefix.length) + '/' + max_length + ' characters');
@@ -472,6 +505,7 @@ function check_errors() {
     } else {
         $('#timeline_application').addClass('error');
     }
+    
 
     if ($('input.required').length == 0 && $('textarea.required').length == 0) {
         $('#submit_button').attr('disabled', false);
@@ -481,7 +515,12 @@ function check_errors() {
         var str = 'The following questions are required but have no answer: <ul>';
         var wrappers = $('.wrapper.required');
         for (var i = 0; i < wrappers.length; i++) {
-            str += '<li>' + $(wrappers[i]).find('label').html() + '</li>';
+            if ($(wrappers[i]).hasClass('check')){
+                str += '<li>' + 'Please select all required checkboxes' + '</li>';
+            }
+            else{
+                str += '<li>' + $(wrappers[i]).find('label').html() + '</li>';
+            }
         }
         str += '</ul>';
         $('#submit_error').html(str);
