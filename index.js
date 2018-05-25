@@ -427,7 +427,6 @@ function Question(name, type, required, label, max_length, prefix) {
 
     function handler() {
         var element = input[0];
-        console.log(element);
  
         if (type == SHORT_ANSWER_TYPE && prefix) {
             if (!input.val().indexOf(prefix) == 0 && input.val().indexOf(prefix.slice(0, prefix.length-1)) == 0) {
@@ -443,9 +442,6 @@ function Question(name, type, required, label, max_length, prefix) {
         if (type == SHORT_ANSWER_TYPE && element.selectionStart < prefix.length) {
             element.selectionStart = prefix.length;
         }
-        console.log(input);
-        console.log(input.val());
-        console.log(input.val()== null);
         if (required && (input.val() == null || (input.val().length - prefix.length) <= 0)) {
             wrapper.addClass('required');
             input.addClass('required');
@@ -455,13 +451,10 @@ function Question(name, type, required, label, max_length, prefix) {
         }
         
         if (type == CHECK_TYPE){
-            console.log('removed?: ' + $('element.check_label').is(':checked'));
             if ($('input.check_label').is(':checked')){
-                console.log('run remove');
                 wrapper.removeClass('required');
                 input.removeClass('required');
             } else{  
-                console.log('run add');
                 wrapper.addClass('required');
                 input.addClass('required');
             }
@@ -470,7 +463,6 @@ function Question(name, type, required, label, max_length, prefix) {
             charcount_element.show().text((input.val().length - prefix.length) + '/' + max_length + ' characters');
         }
         if (input.val() != null && input.val().indexOf(prefix) != 0) {
-            console.error('The prefix was somehow deleted... will try to fix on next reload.');
             prefix = '';
             this.question_prefix = '';
         }
@@ -719,7 +711,6 @@ function save(cb, should_submit) {
         if (typeof cb == 'function') cb();
     }).fail(function(data) {
         $('#last_saved').text('Could not save your work.');
-        console.error(data);
     });
 }
 
@@ -757,12 +748,10 @@ $('#file_input').change(function(e) {
     var files = e.target.files;
     if (files.length == 0) return;
     var file = files[0];
-    console.log(file);
     var formData = new FormData();
     formData.append("file", file);
     formData.append("filename", file.name);
     formData.append("type", file.type);
-    console.log(formData);
     $('#resume_button').val('Uploading...');
     $.ajax({
         type:"POST",
