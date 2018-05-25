@@ -16,6 +16,7 @@ var resume_uploaded = false;
 
 var SHORT_ANSWER_TYPE = 'text';
 var NUMBER_TYPE = 'number';
+var CHECK_TYPE = 'check';
 var ESSAY_TYPE = 'essay';
 
 $('#no_js').hide();
@@ -332,6 +333,29 @@ function Question(name, type, required, label, max_length, prefix) {
         input.append($('<option value="2022">2022</option>'));
         input.append($('<option value="HS">High School</option>'));
         this.category = 'profile';
+
+    }
+    else if (label === "What do you identify as?") {
+        input = $('<select></select>');
+        input.append($('<option disabled selected value=""> -- select an option -- </option>'));
+        input.append($('<option value="male">Male</option>'));
+        input.append($('<option value="female">Female</option>'));
+        input.append($('<option value="no answer">Prefer not to answer</option>'));
+        input.append($('<option value="other">Other</option>'));
+        this.category = 'profile';
+    }
+    else if (label === "What is your race/ethnicity?") {
+        input = $('<select></select>');
+        input.append($('<option disabled selected value=""> -- select an option -- </option>'));
+        input.append($('<option value="American Indian or Alaskan Native">American Indian or Alaskan Native</option>'));
+        input.append($('<option value="Asian / Pacific Islander">Asian / Pacific Islander</option>'));
+        input.append($('<option value="Black or African American">Black or African American</option>'));
+        input.append($('<option value="Hispanic">Hispanic</option>'));
+        input.append($('<option value="White / Caucasian">White / Caucasian</option>'));
+        input.append($('<option value="Multiple ethnicity / Other">Multiple ethnicity / Other</option>'));
+        input.append($('<option value="no answer">Prefer not to answer</option>'));
+ 
+        this.category = 'profile';
     }
     else if (type == NUMBER_TYPE) {
         input.prop('type', 'number');
@@ -342,7 +366,13 @@ function Question(name, type, required, label, max_length, prefix) {
         input = $('<textarea>');
         input.prop('maxlength', max_length || 524288);
         this.category = 'application';
-    } else {
+    } 
+    else if (type == CHECK_TYPE){
+        wrapper.addClass('check')
+        input = $('<input type="checkbox"></input>')
+        this.category = 'application';
+    }
+    else {
         input.prop('type', 'text');
         input.prop('maxlength', max_length || 524288);
         this.category = 'profile';
