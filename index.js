@@ -335,6 +335,7 @@ function Question(name, type, required, label, max_length, prefix) {
         input.append($('<option value="2021">2021</option>'));
         input.append($('<option value="2022">2022</option>'));
         this.category = 'profile';
+        this.question_type = CHECK_TYPE;
 
     }
     else if (label === "What gender do you identify as?") {
@@ -345,6 +346,7 @@ function Question(name, type, required, label, max_length, prefix) {
         input.append($('<option value="no answer">Prefer not to answer</option>'));
         input.append($('<option value="other">Other</option>'));
         this.category = 'profile';
+        this.question_type = CHECK_TYPE;
     }
     else if (label === "What is your race/ethnicity?") {
         input = $('<select></select>');
@@ -358,6 +360,7 @@ function Question(name, type, required, label, max_length, prefix) {
         input.append($('<option value="no answer">Prefer not to answer</option>'));
  
         this.category = 'profile';
+        this.question_type = CHECK_TYPE;
     }
     else if (type == NUMBER_TYPE) {
         input.prop('type', 'number');
@@ -412,10 +415,8 @@ function Question(name, type, required, label, max_length, prefix) {
     this.input = input;
 
     if (answers) {
-        for (var i = 0; i < answers.length; i++) {
-            if (answers[i][0] == label) {
-                input.val(prefix + answers[i][1]);
-            }
+        if (answers[label]) {
+            input.val(prefix + answers[label]);
         }
     }
     if (required && input.val() === '') {
@@ -607,7 +608,7 @@ function load_answers(cb) {
         if (data.error) {
             status = 'Saved';
             $('#timeline_submit').addClass('error');
-            answers = [];
+            answers = {};
         } else {
             status = data.status;
             resume_uploaded = (data.resumes && data.resumes.length > 0);
@@ -618,7 +619,7 @@ function load_answers(cb) {
             }
             answers = data.questions;
         }
-        answers.push(["GitHub Username", data.github_username]);
+        answers["GitHub Username"] = data.github_username;
         cb();
     }).fail(function(data) {
         if (data.status == 403) {
@@ -697,7 +698,11 @@ function save(cb, should_submit) {
     data['status'] = status;
     for (var i = 0; i < questions.length; i++) {
         var q = questions[i];
-        data[q.question_name] = q.input.val().slice(q.question_prefix.length);
+        if (q.question_type == SHORT_ANSWER_TYPE) {
+            data[q.question_name] = q.input.val().slice(q.question_prefix.length);
+        } else {
+            data[q.question_name] = q.input.val();
+        }
     }
     $.ajax({
         type:"POST",
