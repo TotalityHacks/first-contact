@@ -10,8 +10,10 @@ var SUBMIT_URL = APPLICATION_URL + 'submit/';
 var RESUME_URL = APPLICATION_URL + 'resumes/';
 var SAVE_URL = APPLICATION_URL + 'save/';
 
+var NEW_URL_APPLICATION = APPLICATION_URL + 'application/';
+var NEW_URL_SUBMISSION = APPLICATION_URL + 'submissions/';
+
 var questions;
-var status;
 var resume_uploaded = false;
 
 var SHORT_ANSWER_TYPE = 'text';
@@ -325,6 +327,7 @@ function Question(name, type, required, label, max_length, prefix, slug) {
     this.question_label = label;
     this.question_max_length = max_length;
     this.question_prefix = prefix;
+    this.question_slug = slug;
 
     var wrapper = $("<div>");
     wrapper.addClass("wrapper app question_" + type);
@@ -349,6 +352,7 @@ function Question(name, type, required, label, max_length, prefix, slug) {
         input.append($('<option value="2020">2020</option>'));
         input.append($('<option value="2021">2021</option>'));
         input.append($('<option value="2022">2022</option>'));
+        input.append($('<option value="other">Other</option>'));
         this.category = 'profile';
         this.question_type = CHECK_TYPE;
 
@@ -359,20 +363,20 @@ function Question(name, type, required, label, max_length, prefix, slug) {
         input.append($('<option value="male">Male</option>'));
         input.append($('<option value="female">Female</option>'));
         input.append($('<option value="other">Other</option>'));
-        input.append($('<option value="no answer">Prefer not to answer</option>'));
+        input.append($('<option value="no_answer">Prefer not to answer</option>'));
         this.category = 'profile';
         this.question_type = CHECK_TYPE;
     }
     else if (slug === SLUG_RACE_ETHNICITY) {
         input = $('<select></select>');
         input.append($('<option disabled selected value=""> -- select an option -- </option>'));
-        input.append($('<option value="American Indian or Alaskan Native">American Indian or Alaskan Native</option>'));
-        input.append($('<option value="Asian / Pacific Islander">Asian / Pacific Islander</option>'));
-        input.append($('<option value="Black or African American">Black or African American</option>'));
-        input.append($('<option value="Hispanic">Hispanic</option>'));
-        input.append($('<option value="White / Caucasian">White / Caucasian</option>'));
-        input.append($('<option value="Multiple ethnicity / Other">Multiple ethnicity / Other</option>'));
-        input.append($('<option value="no answer">Prefer not to answer</option>'));
+        input.append($('<option value="am_indian_or_ak_native">American Indian or Alaskan Native</option>'));
+        input.append($('<option value="asian_or_pac_islander">Asian / Pacific Islander</option>'));
+        input.append($('<option value="black_or_af_am">Black or African American</option>'));
+        input.append($('<option value="hispanic">Hispanic</option>'));
+        input.append($('<option value="white_caucasian">White / Caucasian</option>'));
+        input.append($('<option value="multiple_or_other">Multiple ethnicity / Other</option>'));
+        input.append($('<option value="no_answer">Prefer not to answer</option>'));
  
         this.category = 'profile';
         this.question_type = CHECK_TYPE;
@@ -445,8 +449,8 @@ function Question(name, type, required, label, max_length, prefix, slug) {
     this.input = input;
 
     if (answers) {
-        if (answers[label]) {
-            input.val(prefix + answers[label]);
+        if (answers[slug]) {
+            input.val(prefix + answers[slug]);
         }
     }
     if (required && input.val() === '') {
@@ -570,8 +574,6 @@ function load_questions(cb) {
                 questions.push(q);
             }
 
-            questions.push(new Question('github_username', SHORT_ANSWER_TYPE, false, 'GitHub Username', 39, 'https://github.com/', "github_username"));
-
             $('#personal_info_questions').empty();
             $('#essays').empty();
 
@@ -632,34 +634,31 @@ function create_resume_button() {
 function load_answers(cb) {
     $.ajax({
         type:"GET",
-        url: SUBMIT_URL,
+        url: NEW_URL_APPLICATION,
         dataType: "json",
         beforeSend: function(xhr) {
             xhr.setRequestHeader("Authorization", "Token " + localStorage.getItem('token'));
         }
     }).done(function(data) {
+        console.log(data);
         if (data.error) {
-            status = 'Saved';
             $('#timeline_submit').addClass('error');
             answers = {};
         } else {
-            status = data.status;
             resume_uploaded = (data.resumes && data.resumes.length > 0);
-            if (status == 'Submitted') {
+            if (data.submitted) {
                 $('#submit_button').val('Resubmit!');
             } else {
                 $('#timeline_submit').addClass('error');
             }
-            answers = data.questions;
+            answers = data;
         }
-        answers["GitHub Username"] = data.github_username;
         cb();
     }).fail(function(data) {
         if (data.status == 403) {
             localStorage.removeItem('token');
             window.location.hash = '#login';
         } else if (data.status == 404) {
-            status = 'Saved';
             $('#timeline_submit').addClass('error');
             cb();
         } else {
@@ -702,7 +701,6 @@ function application_view(e) {
 }
 
 function submit_button(e) {
-    status = 'Submitted';
     if (e) e.preventDefault();
     $('#submit_button').val('Submitting...');
     save(function() {
@@ -729,18 +727,17 @@ $('#timeline_submit').click(submit_timeline_link);
 
 function save(cb, should_submit) {
     var data = {};
-    data['status'] = status;
     for (var i = 0; i < questions.length; i++) {
         var q = questions[i];
         if (q.question_type == SHORT_ANSWER_TYPE) {
-            data[q.question_name] = q.input.val().slice(q.question_prefix.length);
+            data[q.question_slug] = q.input.val().slice(q.question_prefix.length);
         } else {
-            data[q.question_name] = q.input.val();
+            data[q.question_slug] = q.input.val();
         }
     }
     $.ajax({
-        type:"POST",
-        url: should_submit ? SUBMIT_URL : SAVE_URL,
+        type: should_submit ? "POST" : "PUT",
+        url: should_submit ? NEW_URL_SUBMISSION : (NEW_URL_APPLICATION + answers.id + '/'), 
         dataType: "json",
         beforeSend: function(xhr) {
             xhr.setRequestHeader("Authorization", "Token " + localStorage.getItem('token'));
@@ -769,7 +766,7 @@ function needs_save() {
 
 function save_count_update() {
     if (needs_save_time && (Date.now() - needs_save_time > 1000)) {
-        save(save_finished);
+        save(save_finished, false);
         return;
     }
 }
