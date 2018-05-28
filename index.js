@@ -358,8 +358,8 @@ function Question(name, type, required, label, max_length, prefix, slug) {
         input.append($('<option disabled selected value=""> -- select an option -- </option>'));
         input.append($('<option value="male">Male</option>'));
         input.append($('<option value="female">Female</option>'));
-        input.append($('<option value="no answer">Prefer not to answer</option>'));
         input.append($('<option value="other">Other</option>'));
+        input.append($('<option value="no answer">Prefer not to answer</option>'));
         this.category = 'profile';
         this.question_type = CHECK_TYPE;
     }
