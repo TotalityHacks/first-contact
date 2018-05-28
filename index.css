@@ -418,14 +418,6 @@ input[disabled]#submit_button {
     color: white;
 }
 
-#timeline td::after {
-    content: "\2714";
-    margin-left: 10px;
-}
-
-#timeline td.error::after {
-    content: "\2718";
-}
 
 #resume_button {
     width: 95%;
