@@ -298,12 +298,19 @@ function figure_out_current_view() {
         }
         load_application();
     }
-    else {
+    else if (window.location.hash == "#login") {
         if (localStorage.getItem('token')) {
             window.location.hash = '#application';
             return;
         }
         login_form();
+    }
+    else {
+        if (localStorage.getItem('token')) {
+            window.location.hash = '#application';
+            return;
+        }
+        registration_form();
     }
     $('#form_container').show();
 }
