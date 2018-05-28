@@ -21,6 +21,7 @@ var ESSAY_TYPE = 'essay';
 
 var SLUG_GENDER = 'gender';
 var SLUG_RACE_ETHNICITY = 'race_ethnicity';
+var SLUG_STUDY_LEVEL = 'current_study_level';
 
 $('#no_js').hide();
 
@@ -362,6 +363,17 @@ function Question(name, type, required, label, max_length, prefix, slug) {
         input.append($('<option value="Multiple ethnicity / Other">Multiple ethnicity / Other</option>'));
         input.append($('<option value="no answer">Prefer not to answer</option>'));
  
+        this.category = 'profile';
+        this.question_type = CHECK_TYPE;
+    }
+    else if (slug === SLUG_STUDY_LEVEL) {
+        input = $('<select></select>');
+        input.append($('<option disabled selected value=""> -- select an option -- </option>'));
+        input.append($('<option value="high_school">High School</option>'));
+        input.append($('<option value="undergraduate">Undergraduate</option>'));
+        input.append($('<option value="graduate">Graduate</option>'));
+        input.append($('<option value="other">Other</option>'));
+
         this.category = 'profile';
         this.question_type = CHECK_TYPE;
     }
