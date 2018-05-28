@@ -19,9 +19,13 @@ var NUMBER_TYPE = 'number';
 var CHECK_TYPE = 'check';
 var ESSAY_TYPE = 'essay';
 
+var SLUG_AGE = 'age';
 var SLUG_GENDER = 'gender';
+var SLUG_MAJOR = 'major';
 var SLUG_RACE_ETHNICITY = 'race_ethnicity';
+var SLUG_SCHOOL = 'school';
 var SLUG_STUDY_LEVEL = 'current_study_level';
+var SLUGS_MLH = [SLUG_AGE, SLUG_MAJOR, SLUG_GENDER, SLUG_RACE_ETHNICITY];
 
 $('#no_js').hide();
 
@@ -399,6 +403,10 @@ function Question(name, type, required, label, max_length, prefix, slug) {
         this.category = 'profile';
     }
 
+    if(SLUGS_MLH.indexOf(slug) >= 0) {
+        this.category = 'mlh';
+    }
+
     input.prop('placeholder', 'Your answer');
     input.prop('id', name);
     if (type != CHECK_TYPE){
@@ -413,7 +421,7 @@ function Question(name, type, required, label, max_length, prefix, slug) {
         wrapper.append(label_element);
     }
 
-    if (slug === "school") {
+    if (slug === SLUG_SCHOOL) {
         $.get({
             url: SCHOOLS_URL,
             success: function (results) {
@@ -557,14 +565,16 @@ function load_questions(cb) {
 
             questions.push(new Question('github_username', SHORT_ANSWER_TYPE, false, 'GitHub Username', 39, 'https://github.com/', "github_username"));
 
-            $('#personal_info').empty();
+            $('#personal_info_questions').empty();
             $('#essays').empty();
 
             questions.map(function(q) {
                 if (q.category == 'profile') {
-                    $('#personal_info').append(q.container);
+                    $('#personal_info_questions').append(q.container);
                 } else if (q.category == 'application') {
                     $('#essays').append(q.container);
+                } else if (q.category == 'mlh') {
+                    $('#mlh_questions').append(q.container);
                 }
                 q.handler();
             });
@@ -577,9 +587,10 @@ function load_questions(cb) {
         }).fail(function(data) {
             $('#application_form').show();
             $('input').hide();
-            $('#personal_info').empty();
+            $('#personal_info_questions').empty();
             $('#essays').empty();
-            $('#personal_info').html(data.responseText);
+            $('#mlh').empty();
+            $('#personal_info_questions').html(data.responseText);
         });
     });
 }
@@ -604,7 +615,7 @@ function create_resume_button() {
     input.prop('type', 'button');
     wrapper.append(input);
 
-    $('#personal_info').append(wrapper);
+    $('#personal_info_questions').append(wrapper);
 
     $('#resume_button').click(function() {
         $('#file_input').click();
@@ -647,9 +658,10 @@ function load_answers(cb) {
         } else {
             $('#application_form').show();
             $('input').hide();
-            $('#personal_info').empty();
+            $('#personal_info_questions').empty();
             $('#essays').empty();
-            $('#personal_info').html(data.responseText);
+            $('#mlh').empty();
+            $('#personal_info_questions').html(data.responseText);
         }
     });
 }

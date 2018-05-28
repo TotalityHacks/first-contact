@@ -17,6 +17,11 @@ body > div {
     display: none;
 }
 
+h2 {
+    color: #E60C88;
+    text-align: center;
+}
+
 #no_js {
     position: relative;
     margin: 0 auto;
