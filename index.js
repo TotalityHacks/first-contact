@@ -14,7 +14,6 @@ var NEW_URL_APPLICATION = APPLICATION_URL + 'application/';
 var NEW_URL_SUBMISSION = APPLICATION_URL + 'submissions/';
 
 var questions;
-var status;
 var resume_uploaded = false;
 
 var SHORT_ANSWER_TYPE = 'text';
@@ -643,14 +642,11 @@ function load_answers(cb) {
     }).done(function(data) {
         console.log(data);
         if (data.error) {
-            status = 'Saved';
             $('#timeline_submit').addClass('error');
             answers = {};
         } else {
-            // TODO(john) this part doesn't work yet
-            status = data.status;
             resume_uploaded = (data.resumes && data.resumes.length > 0);
-            if (status == 'Submitted') {
+            if (data.submitted) {
                 $('#submit_button').val('Resubmit!');
             } else {
                 $('#timeline_submit').addClass('error');
@@ -663,7 +659,6 @@ function load_answers(cb) {
             localStorage.removeItem('token');
             window.location.hash = '#login';
         } else if (data.status == 404) {
-            status = 'Saved';
             $('#timeline_submit').addClass('error');
             cb();
         } else {
@@ -706,7 +701,6 @@ function application_view(e) {
 }
 
 function submit_button(e) {
-    status = 'Submitted';
     if (e) e.preventDefault();
     $('#submit_button').val('Submitting...');
     save(function() {
