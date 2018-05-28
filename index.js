@@ -5,7 +5,7 @@ var RESET_URL = BASE_URL + 'registration/reset/';
 var RESEND_URL = BASE_URL + 'registration/resend_email/';
 var APPLICATION_URL = BASE_URL + 'application/';
 var SCHOOLS_URL = APPLICATION_URL + 'schools_list/';
-var QUESTIONS_URL = APPLICATION_URL + 'questions/';
+var QUESTIONS_URL = '/questions.json';
 var SUBMIT_URL = APPLICATION_URL + 'submit/';
 var RESUME_URL = APPLICATION_URL + 'resumes/';
 var SAVE_URL = APPLICATION_URL + 'save/';
@@ -18,6 +18,9 @@ var SHORT_ANSWER_TYPE = 'text';
 var NUMBER_TYPE = 'number';
 var CHECK_TYPE = 'check';
 var ESSAY_TYPE = 'essay';
+
+var SLUG_GENDER = 'gender';
+var SLUG_RACE_ETHNICITY = 'race_ethnicity';
 
 $('#no_js').hide();
 
@@ -302,7 +305,7 @@ function figure_out_current_view() {
 
 var answers;
 
-function Question(name, type, required, label, max_length, prefix) {
+function Question(name, type, required, label, max_length, prefix, slug) {
     max_length = max_length || 100;
     this.question_name = name;
     this.question_type = type;
@@ -327,7 +330,7 @@ function Question(name, type, required, label, max_length, prefix) {
     wrapper.append(charcount_element);
     
     var input = $("<input>");
-    if (label === "College Graduation Year") {
+    if (slug === "college_grad_year") {
         input = $('<select></select>');
         input.append($('<option disabled selected value=""> -- select an option -- </option>'));
         input.append($('<option value="2019">2019</option>'));
@@ -338,7 +341,7 @@ function Question(name, type, required, label, max_length, prefix) {
         this.question_type = CHECK_TYPE;
 
     }
-    else if (label === "What gender do you identify as?") {
+    else if (slug === SLUG_GENDER) {
         input = $('<select></select>');
         input.append($('<option disabled selected value=""> -- select an option -- </option>'));
         input.append($('<option value="male">Male</option>'));
@@ -348,7 +351,7 @@ function Question(name, type, required, label, max_length, prefix) {
         this.category = 'profile';
         this.question_type = CHECK_TYPE;
     }
-    else if (label === "What is your race/ethnicity?") {
+    else if (slug === SLUG_RACE_ETHNICITY) {
         input = $('<select></select>');
         input.append($('<option disabled selected value=""> -- select an option -- </option>'));
         input.append($('<option value="American Indian or Alaskan Native">American Indian or Alaskan Native</option>'));
@@ -398,7 +401,7 @@ function Question(name, type, required, label, max_length, prefix) {
         wrapper.append(label_element);
     }
 
-    if (label === "School") {
+    if (slug === "school") {
         $.get({
             url: SCHOOLS_URL,
             success: function (results) {
@@ -536,11 +539,11 @@ function load_questions(cb) {
                 return a.id - b.id;
             });
             for (var i = 0; i < data.length; i++) {
-                var q = new Question('question_' + data[i].id, data[i].type, data[i].required, data[i].text, data[i].max_length, data[i].prefix);
+                var q = new Question('question_' + data[i].id, data[i].type, data[i].required, data[i].text, data[i].max_length, data[i].prefix, data[i].slug);
                 questions.push(q);
             }
 
-            questions.push(new Question('github_username', SHORT_ANSWER_TYPE, false, 'GitHub Username', 39, 'https://github.com/'));
+            questions.push(new Question('github_username', SHORT_ANSWER_TYPE, false, 'GitHub Username', 39, 'https://github.com/', "github_username"));
 
             $('#personal_info').empty();
             $('#essays').empty();
