@@ -94,7 +94,7 @@
       "type":"number",
       "max_length":65535,
       "prefix":"",
-      "text":"College Graduation Year",
+      "text":"Graduation Year",
       "required":true,
       "choices":null,
       "slug": "college_grad_year"
