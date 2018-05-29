@@ -71,14 +71,14 @@ h1, h2 {
     margin: 10px;
 }
 
-a.selector {
+#login_registration a.selector {
     padding: 10px;
     font-weight: 100;
     color: white;
     text-decoration: none;
 }
 
-a.selector.selected {
+#login_registration a.selector.selected {
     font-weight: bold;
 }
 
