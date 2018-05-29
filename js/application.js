@@ -97,7 +97,7 @@ function create_resume_button() {
     var label_element = $("<label>");
     label_element.addClass("question_label app");
     label_element.prop('for', 'resume_button');
-    label_element.text("Resume");
+    label_element.text("Resume (.PDF only please)");
     wrapper.append(label_element);
 
     var charcount_element = $("<span>").addClass("charcount").text('').hide();
