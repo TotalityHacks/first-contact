@@ -187,7 +187,6 @@ input[disabled].lr {
     width: 80vw;
     max-width: 1000px;
     margin-top: 20px;
-    margin-bottom: 20px;
     font-size: 38pt;
     font-weight: lighter;
     font-family: 'Ubuntu', sans-serif;
@@ -197,9 +196,16 @@ input[disabled].lr {
     overflow: auto;
 }
 
+#header-right {
+    width: 80vw;
+    max-width: 1000px;
+    margin-bottom: 20px;
+    display:flex;
+}
+
 #sun {
     max-height: 1.5em;
-    margin: 0 0 0 20px;
+    margin: 0 20px 0 20px;
 }
 
 #page_title {
