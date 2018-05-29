@@ -118,6 +118,7 @@ function Question(name, type, required, label, max_length, prefix, slug) {
                 new Awesomplete(input[0], {
                     list: results["schools"],
                     minChars: 1,
+                    autoFirst: true,
                 });
             }
         });

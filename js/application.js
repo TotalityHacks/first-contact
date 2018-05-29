@@ -172,7 +172,6 @@ function submit_button(e) {
 }
 
 function save(cb, should_submit) {
-    needs_save_time = null;
     var data = {};
     for (var i = 0; i < questions.length; i++) {
         var q = questions[i];
@@ -209,6 +208,7 @@ function needs_save() {
 
 function save_count_update() {
     if (needs_save_time && (Date.now() - needs_save_time > 1000)) {
+        needs_save_time = null;
         save(save_finished, false);
         return;
     }
