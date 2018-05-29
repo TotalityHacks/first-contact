@@ -111,9 +111,17 @@
                         <div id="mlh_questions" class="page"></div>
                     </div>
                     <div class="page" id="essays"></div>
+                    <div class="page" id="submit_page">
+                        <h1>Application Submitted</h1>
+                        <p>
+                            Your application has been submitted! 
+                            You can go back and edit your application and resubmit as many times as you want until the deadline.
+                        </p>
+                    </div>
                     <div id="buttons">
                         <input id="next_page" type="submit" value="Next Page"/>
                         <input id="previous_page" type="submit" value="Previous Page"/>
+                        <input id="edit_page" type="submit" value="Edit Application"/>
                         <div id="submit_error"></div>
                         <input id="submit_button" type="submit" value="Submit"/>
                     </div>
@@ -131,8 +139,12 @@
         src="https://code.jquery.com/jquery-3.2.1.min.js"
         integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
         crossorigin="anonymous"></script>
-        <script src="madras-url.js"></script>
-        <script src="index.js"></script>
+        <script src="js/globals.js"></script>
+        <script src="js/registration.js"></script>
+        <script src="js/question.js"></script>
+        <script src="js/application.js"></script>
+        <script src="js/views.js"></script>
+        <script src="js/add_listeners.js"></script>
         <script
                 src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.2/awesomplete.min.js"
                 integrity="sha256-xA+USAVmEnBnz1FiLRSG8xglJflQVHmQvbx5+u4bslk="
