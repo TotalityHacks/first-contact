@@ -37,7 +37,6 @@
                     <label id="login_password_error" for="login_password" class="form_error"></label>
                     <input type="password" name="password" id="login_password" class="lr" placeholder="Password"/>
                     <input type="submit" name="login" class="lr" value="Login"/>
-                    <a id="resend" class="lr" href="#resend">Didn't get a confirmation email?</a>
                     <a id="reset" class="lr" href="#reset">Forgot password?</a>
                 </form>
                 <form id="registration_form" class="lr" >
@@ -69,12 +68,13 @@
 
                 <form id="resend_form" class="lr">
                     <div id="resend_email_query">
-                        Enter your email address below to resend the confirmation email.
+                        Something went wrong with your email confirmation.
+                        Enter your email address below to resend the confirmation email.<br><br>
+                        If issues persist, feel free to contact us at <a href="mailto:hello@totalityhacks.com">hello@totalityhacks.com</a>
                     </div>
                     <input type="text" name="email" id="resend_email" class="lr" placeholder="Email"/>
                     <input type="submit" name="resend" class="lr" value="Send"/>
                     <a id="back" class="lr" href="#login">Back to Login</a>
-
                 </form>
                 
                 <form id="reset_form" class="lr">
