@@ -101,11 +101,8 @@ function register(e) {
         contentType: 'application/json'
     })
         .done(function(data) {
-            $('#registration_form .checkbox').hide();
-            $('#registration_form input').hide();
-            $('#registration_form label').hide();
-            $('#registration_resend').show();
-            $('#register_msg').text(data.message).show();
+            localStorage.setItem('token', data.token);
+            window.location.hash = "#application";
             form.children('input').prop('disabled', false);
         }).fail(function(data) {
             var errors = data.responseJSON.errors;
