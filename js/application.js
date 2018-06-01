@@ -56,6 +56,7 @@ function load_questions(cb_profile, cb_submit) {
             }
 
             $('#personal_info_questions').empty();
+            $('#mlh_questions').empty();
             $('#essays').empty();
 
             questions.map(function(q) {
@@ -84,7 +85,7 @@ function load_questions(cb_profile, cb_submit) {
             $('input').hide();
             $('#personal_info_questions').empty();
             $('#essays').empty();
-            $('#mlh').empty();
+            $('#mlh_questions').empty();
             $('#personal_info_questions').html(data.responseText);
         });
     });
@@ -151,7 +152,7 @@ function load_answers(cb) {
             $('input').hide();
             $('#personal_info_questions').empty();
             $('#essays').empty();
-            $('#mlh').empty();
+            $('#mlh_questions').empty();
             $('#personal_info_questions').html(data.responseText);
         }
     });
