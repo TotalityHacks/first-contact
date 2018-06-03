@@ -44,6 +44,7 @@ $('#file_input').change(function(e) {
         .done(function(data) {
             $('#resume_button').val('Uploaded');
             resume_uploaded = true;
+            $('#resume_filename').html(file.name);
             check_errors();
             setTimeout(function() {
                 $('#resume_button').val('Reupload');

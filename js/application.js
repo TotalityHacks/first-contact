@@ -92,6 +92,8 @@ function load_questions(cb_profile, cb_submit) {
 }
 
 function create_resume_button() {
+    var resume_uploaded = answers.resumes.length > 0;
+
     var wrapper = $("<div>");
     wrapper.addClass("wrapper app question_file_button");
     
@@ -101,7 +103,10 @@ function create_resume_button() {
     label_element.text("Resume (.PDF only please)");
     wrapper.append(label_element);
 
-    var charcount_element = $("<span>").addClass("charcount").text('').hide();
+    var charcount_element = $("<span>").addClass("charcount");
+    if(resume_uploaded) {
+        charcount_element.html(answers.resumes[0].filename).prop('id', 'resume_filename');
+    }
     wrapper.append(charcount_element);
     
     var input = $("<input>");
@@ -131,7 +136,6 @@ function load_answers(cb) {
             $('#timeline_submit').addClass('error');
             answers = {};
         } else {
-            resume_uploaded = (data.resumes && data.resumes.length > 0);
             if (data.submitted) {
                 $('#submit_button').val('Resubmit!');
             } else {

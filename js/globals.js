@@ -20,7 +20,6 @@ var NEW_URL_APPLICATION = APPLICATION_URL + 'application/';
 var NEW_URL_SUBMISSION = APPLICATION_URL + 'submissions/';
 
 var questions;
-var resume_uploaded = false;
 
 var SHORT_ANSWER_TYPE = 'text';
 var NUMBER_TYPE = 'number';

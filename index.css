@@ -86,6 +86,11 @@ a {
     color: white;
 }
 
+.charcount a {
+    color: #E60C88;
+    text-decoration: none;
+}
+
 .form_error {
     display: block;
     margin-left: 10px;
