@@ -53,7 +53,7 @@
       "id":8,
       "type":"text",
       "max_length":65535,
-      "prefix":"",
+      "prefix":"http://",
       "text":"Personal Website",
       "required":false,
       "choices":null,
