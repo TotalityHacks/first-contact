@@ -306,7 +306,7 @@ input.app, textarea.app, select.app {
 }
 
 textarea.app {
-    min-height: 200px;
+    min-height: 75px;
 }
 
 label.app {
