@@ -197,16 +197,16 @@ function Question(name, type, required, label, max_length, prefix, slug) {
         var regex;
         var index;
         if (slug == "devpost") {
-            regex = /(https?:\/\/)?(www\.)?devpost.com\/([^\/]*)\/?.*/
+            regex = /(https?:\/\/)?(www\.)?devpost.com\/([^\/\?]*)\/?.*/
             index = 3;
         } else if (slug == "linkedin") {
-            regex = /(https?:\/\/)?(www\.)?linkedin.com\/in\/([^\/]*)\/?.*/
+            regex = /(https?:\/\/)?(www\.)?linkedin.com\/in\/([^\/\?]*)\/?.*/
             index = 3;
         } else if (slug == "personal_website") {
             regex = /(https?:\/\/)?(.*)/
             index = 2;
         } else if (slug == "github") {
-            regex = /(https?:\/\/)?(www\.)?github.com\/([^\/]*)\/?.*/
+            regex = /(https?:\/\/)?(www\.)?github.com\/([^\/\?]*)\/?.*/
             index = 3;
         } else {
             return;
