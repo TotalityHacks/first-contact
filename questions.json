@@ -34,7 +34,7 @@
       "type":"text",
       "max_length":65535,
       "prefix":"https://devpost.com/",
-      "text":"Devpost",
+      "text":"Devpost Username",
       "required":false,
       "choices":null,
       "slug": "devpost"
@@ -43,8 +43,8 @@
       "id":7,
       "type":"text",
       "max_length":65535,
-      "prefix":"https://www.linkedin.com/in/",
-      "text":"LinkedIn",
+      "prefix":"https://linkedin.com/in/",
+      "text":"LinkedIn Username",
       "required":false,
       "choices":null,
       "slug": "linkedin"
@@ -63,8 +63,8 @@
       "id":9,
       "type":"text",
       "max_length":65535,
-      "prefix":"https://www.github.com/",
-      "text":"Github",
+      "prefix":"https://github.com/",
+      "text":"Github Username",
       "required":false,
       "choices":null,
       "slug": "github"
