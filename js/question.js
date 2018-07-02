@@ -195,19 +195,14 @@ function Question(name, type, required, label, max_length, prefix, slug) {
     input.keydown(prevent_prefix_edit).on('cut', prevent_prefix_edit);
     input.on('paste', function(e) {
         var regex;
-        var index;
         if (slug == "devpost") {
-            regex = /(https?:\/\/)?(www\.)?devpost.com\/([^\/\?]*)\/?.*/
-            index = 3;
+            regex = /(?:https?:\/\/)?(?:www\.)?devpost.com\/([^\/\?]*)\/?.*/
         } else if (slug == "linkedin") {
-            regex = /(https?:\/\/)?(www\.)?linkedin.com\/in\/([^\/\?]*)\/?.*/
-            index = 3;
+            regex = /(?:https?:\/\/)?(?:www\.)?linkedin.com\/in\/([^\/\?]*)\/?.*/
         } else if (slug == "personal_website") {
-            regex = /(https?:\/\/)?(.*)/
-            index = 2;
+            regex = /(?:https?:\/\/)?(.*)/
         } else if (slug == "github") {
-            regex = /(https?:\/\/)?(www\.)?github.com\/([^\/\?]*)\/?.*/
-            index = 3;
+            regex = /(?:https?:\/\/)?(?:www\.)?github.com\/([^\/\?]*)\/?.*/
         } else {
             return;
         }
@@ -215,7 +210,7 @@ function Question(name, type, required, label, max_length, prefix, slug) {
         if (!text) return;
         var matches = text.match(regex);
         if (!matches) return;
-        var temp = matches[index];
+        var temp = matches[1];
         if (!temp) return;
         e.preventDefault();
         input.val(prefix + temp);
