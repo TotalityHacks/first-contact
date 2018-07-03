@@ -192,7 +192,29 @@ function Question(name, type, required, label, max_length, prefix, slug) {
 
     input.keyup(handler).change(handler).click(handler);
     input.keyup(needs_save).change(needs_save);
-    input.keydown(prevent_prefix_edit).on('cut copy paste', prevent_prefix_edit);
+    input.keydown(prevent_prefix_edit).on('cut', prevent_prefix_edit);
+    input.on('paste', function(e) {
+        var regex;
+        if (slug == "devpost") {
+            regex = /(?:https?:\/\/)?(?:www\.)?devpost.com\/([^\/\?]*)\/?.*/
+        } else if (slug == "linkedin") {
+            regex = /(?:https?:\/\/)?(?:www\.)?linkedin.com\/in\/([^\/\?]*)\/?.*/
+        } else if (slug == "personal_website") {
+            regex = /(?:https?:\/\/)?(.*)/
+        } else if (slug == "github") {
+            regex = /(?:https?:\/\/)?(?:www\.)?github.com\/([^\/\?]*)\/?.*/
+        } else {
+            return;
+        }
+        var text = e.originalEvent.clipboardData.getData('text');
+        if (!text) return;
+        var matches = text.match(regex);
+        if (!matches) return;
+        var temp = matches[1];
+        if (!temp) return;
+        e.preventDefault();
+        input.val(prefix + temp);
+    });
 
     this.handler = handler;
 }
